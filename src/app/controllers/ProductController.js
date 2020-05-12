@@ -21,14 +21,16 @@ module.exports = {
         return res.send('Por favor, Preencha todos os campos!')
       }
     }
+    let productId;
+
     if (id) {
       results = await Product.update(req.body);
     } else {
       results = await Product.create(req.body);
     }
-    const productId = results.rows[0].id;
-    return res.redirect(`products/${productId}/edit`)
 
+    productId = results.rows[0].id;
+    return res.redirect(`products/${productId}/edit`)
   },
   async edit(req, res) {
     const { id } = req.params
