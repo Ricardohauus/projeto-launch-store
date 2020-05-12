@@ -6,7 +6,10 @@ routes.get("/", function (req, res) {
 })
 
 routes.get("/products/create", ProductController.create)
-routes.post("/products", ProductController.post)
+routes.post("/products", ProductController.saveOrUpdate)
+routes.get("/products/:id/edit", ProductController.edit)
+routes.put("/products", ProductController.saveOrUpdate)
+
 
 routes.get("/ads/create", function (req, res) {
   res.redirect("/products/create")

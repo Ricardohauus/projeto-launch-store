@@ -3,70 +3,94 @@
 {% block content %}
   <section class="container form">
     <form action="/products" method="post">
-      <div class="fields">
-        <div class="header">
-          <h3>Cadastrar Produto</h3>
-        </div>
-
-        <div class="item">
-          <div>Categoria</div>
-          <select name="category_id">
-            {% for category in categories %}
-              <option value="{{category.id}}" {% if product.category_id == category.id %} selected="selected" {% endif %}>
-                {{category.name}}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <div class="item">
-          <div>Nome</div>
-          <div><input type="text" name="name" placeholder="Digite o Título do Anúncio" value="{{product.name}}"></div>
-        </div>
-
-        <div class="item">
-          <div>Descrição</div>
-          <div>
-            <textArea name="description" value="{{product.description}}"></textArea>
+      <form method="POST" {% if product.id != null %} action="/products?_method=PUT" {% else %} action="/products" {% endif %}>
+        <div class="fields">
+          <div class="header">
+            {% if product.id != null %}
+              <input type="hidden" name="id" value="{{product.id}}">
+              <input type="hidden" name="user_id" value="{{product.user_id}}">
+              <h3>Editar Produto</h3>
+            {% else %}
+              <h3>Cadastrar Produto</h3>
+            {% endif %}
           </div>
-        </div>
-
-        <div class="item">
-          <div>Valor</div>
-          <div>
-            <input onkeydown="Mask.apply(this,'formatBRL')" type="text" name="price" placeholder="Preço do produto" value="{{product.price}}"/>
+          <div class="item">
+            <div>Categoria</div>
+            <select name="category_id">
+              {% for category in categories %}
+                <option value="{{category.id}}" {% if product.category_id == category.id %} selected="selected" {% endif %}>
+                  {{category.name}}
+                </option>
+              {% endfor %}
+            </select>
           </div>
-        </div>
-
-        {% if product.old_price %}
-          <input type="hidden" name="old_price" value="{{product.old_price}}"/>
-        {% endif %}
-
-        <div class="item">
-          <div>Quantidade</div>
-          <div>
-            <input type="number" name="quantity" placeholder="Estoque Disponível" value="{{product.quantity}}"/>
-          </div>
-        </div>
-        {% if product.status %}
 
           <div class="item">
-            <div>Disponível</div>
+            <div>Nome</div>
+            <div><input type="text" name="name" placeholder="Digite o Título do Anúncio" value="{{product.name}}"></div>
+          </div>
+
+          <div class="item">
+            <div>Descrição</div>
             <div>
-              <span>
-                <input type="radio" name="status" checked="checked" value="1">
+              <textArea name="description" >{{product.description}}</textArea>
+            </div>
+          </div>
+
+          <div class="item">
+            <div>Valor</div>
+            <div>
+              <input onkeydown="Mask.apply(this,'formatBRL')" type="text" name="price" placeholder="Preço do produto" value="{{product.price}}"/>
+            </div>
+          </div>
+
+          {% if product.old_price %}
+            <input type="hidden" name="old_price" value="{{product.old_price}}"/>
+          {% endif %}
+
+          <div class="item">
+            <div>Quantidade</div>
+            <div>
+              <input type="number" name="quantity" placeholder="Estoque Disponível" value="{{product.quantity}}"/>
+            </div>
+          </div>
+          {% if product.status %}
+
+            <div class="item">
+              <div>Disponível</div>
+              <div>
+                <span>
+                  <input type="radio" name="status" checked="checked" value="1">
                 Sim
               </span>
-              <span>
-                <input type="radio" name="status" {% if product.status == "0" %} checked="checked" {% endif %} value="0">
+                <span>
+                  <input type="radio" name="status" {% if product.status == "0" %} checked="checked" {% endif %} value="0">
                 Não
               </span>
 
+              </div>
             </div>
-          </div>
+          {% endif %}
+        </div>
+        {% if product.id == null %}
+          <button  class="button" type="submit">
+           Salvar
+          </button>
+        {% else %}
+          <button  class="button edit" type="submit">
+           Editar
+          </button>
         {% endif %}
-      </div>
-      <button class="button" type="submit">Salvar</button>
-    </form>
-  </section>
-{% endblock %}
+
+      </form>
+
+      {% if product.id != null %}
+        <form id="form-delete" method="POST" action="/products?_method=DELETE">
+          <input type="hidden" name="id" value="{{product.id}}">
+          <button class="button delete" type="submit">
+            Deletar
+          </button>
+        </form>
+      {% endif %}
+    </section>
+  {% endblock %}
