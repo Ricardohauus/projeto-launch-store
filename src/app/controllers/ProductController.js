@@ -56,9 +56,9 @@ module.exports = {
     return res.render("products/create.njk", { product, categories })
 
   },
-  delete(req, res) {
+  async delete(req, res) {
     const { id } = req.body
-    Product.delete(id);
+    await Product.delete(id);
     return res.send("deletado")
   }
 }
