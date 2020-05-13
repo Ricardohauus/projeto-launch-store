@@ -47,9 +47,6 @@ module.exports = {
         where id = $9
         RETURNING id
     `
-    data.price = data.price.replace(/\D/g, "")
-    data.old_price = data.old_price.replace(/\D/g, "")
-
     const values = [
       data.category_id,
       data.user_id || 1,
@@ -63,5 +60,8 @@ module.exports = {
     ]
 
     return db.query(query, values)
+  },
+  delete(id) {
+    return db.query(`DELETE FROM products WHERE ID = ${id}`)
   },
 }
