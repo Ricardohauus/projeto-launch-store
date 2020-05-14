@@ -81,8 +81,6 @@ module.exports = {
       src: `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`
     }))
 
-    console.log(req.files);
-
     return res.render("products/create.njk", { product, categories, files })
 
   },
@@ -90,5 +88,8 @@ module.exports = {
     const { id } = req.body
     await Product.delete(id);
     return res.send("deletado")
+  },
+  async show(req, res) {
+    return res.render("products/show")
   }
 }
