@@ -1,14 +1,16 @@
 const express = require('express')
 const routes = express.Router()
 const ProductController = require("./app/controllers/ProductController")
+const multer = require("./app/middlewares/multer")
+
 routes.get("/", function (req, res) {
   res.render("layout.njk")
 })
 
 routes.get("/products/create", ProductController.create)
-routes.post("/products", ProductController.saveOrUpdate)
+routes.post("/products", multer.array("photos", 6), ProductController.saveOrUpdate)
 routes.get("/products/:id/edit", ProductController.edit)
-routes.put("/products", ProductController.saveOrUpdate)
+routes.put("/products", multer.array("photos", 6), ProductController.saveOrUpdate)
 routes.delete("/products", ProductController.delete)
 
 

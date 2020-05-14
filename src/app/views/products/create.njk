@@ -3,7 +3,7 @@
 {% block content %}
   <section class="container form">
     <form action="/products" method="post">
-      <form method="POST" {% if product.id != null %} action="/products?_method=PUT" {% else %} action="/products" {% endif %}>
+      <form enctype="multipart/form-data" method="POST" {% if product.id != null %} action="/products?_method=PUT" {% else %} action="/products" {% endif %}>
         <div class="fields">
           <div class="header">
             {% if product.id != null %}
