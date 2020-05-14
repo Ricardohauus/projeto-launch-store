@@ -62,8 +62,19 @@ module.exports = {
     product.price = product.price ? formatPrice(product.price) : product.price
 
     results = await Category.all();
+
     const categories = results.rows
-    return res.render("products/create.njk", { product, categories })
+
+    results = await Product.file(product.id);
+    let files = results.rows
+    files = files.map(file => ({
+      ...file,
+      src: `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`
+    }))
+
+    console.log(req.headers);
+
+    return res.render("products/create.njk", { product, categories, files })
 
   },
   async delete(req, res) {
