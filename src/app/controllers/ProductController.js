@@ -20,11 +20,20 @@ module.exports = {
     let productId;
 
     for (key of keys) {
-      if (req.body[key] == "") {
+      if (req.body[key] == "" && key != "removed_files") {
         return res.send('Por favor, Preencha todos os campos!')
       }
     }
-    if (req.files.length == 0) {
+
+    if (req.body.removed_files) {
+      const removedFiles = req.body.removed_files.split(",")
+      const lastIndex = removedFiles.length - 1
+      removedFiles.splice(lastIndex, 1)
+      const removedFilesPromisse = removedFiles.map(id => File.delete(id))
+      await Promise.all(removedFilesPromisse);
+    }
+
+    if (req.files.length == 0 && !id) {
       return res.send('Por favor, Envie pelo menos uma imagem!')
     }
 
@@ -72,7 +81,7 @@ module.exports = {
       src: `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`
     }))
 
-    console.log(req.headers);
+    console.log(req.files);
 
     return res.render("products/create.njk", { product, categories, files })
 

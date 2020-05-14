@@ -1,5 +1,5 @@
 const db = require("../../config/db")
-
+const fs = require("fs")
 module.exports = {
   create({ filename, path, product_id }) {
     const query = `
@@ -17,38 +17,16 @@ module.exports = {
     ]
     return db.query(query, values)
   },
-  find(id) {
-    return db.query(`SELECT * FROM products WHERE ID = ${id}`)
-  },
-  update(data) {
-    const query = `
-        UPDATE products SET
-            category_id = $1,
-            user_id = $2,
-            name = $3,
-            description = $4,
-            old_price = $5,
-            price = $6,
-            quantity = $7,
-            status = $8
-        where id = $9
-        RETURNING id
-    `
-    const values = [
-      data.category_id,
-      data.user_id || 1,
-      data.name,
-      data.description,
-      data.old_price || data.price,
-      data.price,
-      data.quantity,
-      data.status || 1,
-      data.id
-    ]
+  async delete(id) {
+    try {
+      const results = await db.query(`SELECT * FROM files where id = ${id}`)
+      const file = results.rows[0]
+      fs.unlinkSync(file.path)
+      return db.query(`DELETE FROM files WHERE ID = ${id}`)
+    } catch (error) {
+      console.log("Caiu aqui" + error);
+      return;
+    }
 
-    return db.query(query, values)
-  },
-  delete(id) {
-    return db.query(`DELETE FROM products WHERE ID = ${id}`)
   },
 }
