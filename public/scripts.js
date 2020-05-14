@@ -103,3 +103,37 @@ const PhotosUpload = {
     this.removePhoto(event);
   }
 }
+
+const ImageGallery = {
+  highlight: document.querySelector(".gallery .highlight > img"),
+  previews: document.querySelectorAll('.gallery-preview img'),
+  setImage(e) {
+    const { target } = e
+
+    this.previews.forEach(preview => preview.classList.remove('active'))
+    target.classList.add('active')
+
+    this.highlight.src = target.src
+    LightBox.image.src = target.src
+
+  }
+}
+
+const LightBox = {
+  target: document.querySelector(".lightbox-target "),
+  image: document.querySelector(".lightbox-target img"),
+  closeButton: document.querySelector(".lightbox-target a.lightbox-close"),
+  open() {
+    this.target.style.opacity = 1
+    this.target.style.top = 0
+    this.target.style.bottom = 0
+    this.closeButton.style.top = 0
+  },
+  close() {
+    this.target.style.opacity = 0
+    this.target.style.top = "-100%"
+    this.target.style.bottom = "inital"
+    this.closeButton.style.top = "-80px"
+  }
+
+}

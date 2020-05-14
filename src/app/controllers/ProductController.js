@@ -100,7 +100,12 @@ module.exports = {
     product.price = product.price ? formatPrice(product.price) : product.price
     product.old_price = product.old_price ? formatPrice(product.old_price) : product.old_price
     product.updated_at = moment(product.updated_at).format('DD/MM/YYYY [ás] H').concat("h")
+    results = await Product.file(product.id);
+    const files = results.rows.map(file => ({
+      ...file,
+      src: `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`
+    }))
 
-    return res.render("products/show", { product })
+    return res.render("products/show", { product, files })
   }
 }
