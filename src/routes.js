@@ -8,8 +8,9 @@ routes.get("/", function (req, res) {
 })
 
 routes.get("/products/create", ProductController.create)
-routes.post("/products", multer.array("photos", 6), ProductController.saveOrUpdate)
 routes.get("/products/:id/edit", ProductController.edit)
+
+routes.post("/products", multer.array("photos", 6), ProductController.saveOrUpdate)
 routes.put("/products", multer.array("photos", 6), ProductController.saveOrUpdate)
 routes.delete("/products", ProductController.delete)
 
