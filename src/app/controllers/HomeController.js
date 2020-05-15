@@ -12,9 +12,11 @@ module.exports = {
 
     async function getImage(productId) {
       let results = await Product.file(productId);
-      const files = results.rows.map(file => src = `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`)
+      const files = results.rows.map(file => src = `${req.protocol}://${req.headers.host}${file.path.replace(/[\/\\]/g, '/').replace("public", '')}`)
       return files[0];
     }
+
+
 
     const promisseProducts = products.map(async product => {
       product.img = await getImage(product.id)
