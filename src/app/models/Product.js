@@ -70,4 +70,26 @@ module.exports = {
   all() {
     return db.query(`SELECT * FROM products order by updated_at desc`)
   },
+  search(params) {
+    const { filter, category } = params
+    let query = "",
+      filterQuery = `WHERE`;
+
+    if (category) {
+      filterQuery = `${filterQuery}
+      p.category_id = ${category} 
+      AND
+      `
+    }
+
+    filterQuery = `${filterQuery}
+    ( p.name ilike '%${filter}%' or p.description ilike '%${filter}%' )`
+
+    query = `    SELECT p.*,  c.name as category_name from products p 
+    left JOIN categories c on (c.id = p.category_id)
+    ${filterQuery}    
+    order by p.updated_at desc
+    `
+    return db.query(query)
+  }
 }
