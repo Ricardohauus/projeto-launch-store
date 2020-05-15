@@ -66,5 +66,8 @@ module.exports = {
   },
   file(id) {
     return db.query(`SELECT * FROM files WHERE product_id = ${id}`)
-  }
+  },
+  all() {
+    return db.query(`SELECT * FROM products order by updated_at desc`)
+  },
 }
