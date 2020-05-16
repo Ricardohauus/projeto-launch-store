@@ -1,18 +1,10 @@
-const Category = require("../models/Category")
-const Product = require("../models/Product")
-const File = require("../models/File")
-const { formatPrice } = require("../lib/utils")
-const moment = require("moment")
 module.exports = {
-
-  create(req, res) {
-    Category.all().then((result) => {
-      const categories = result.rows
-      return res.render("products/create", { categories })
-    }).catch((err) => {
-      throw new Error(err)
-    });
-
+  registerForm(req, res) {
+    try {
+      return res.render("users/register")
+    } catch (error) {
+      console.log(erro);
+    }
   },
   async saveOrUpdate(req, res) {
     const keys = Object.keys(req.body)
