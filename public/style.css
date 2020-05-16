@@ -521,7 +521,12 @@
     .form input[name="cpf_cnpj"] {
         max-width: 50%;
     }
+    /*VALIDATE ERRORS*/
     
-    .form input[name="email"] {
-        max-width: 70%;
+    .input .error {
+        background-color: #e94646;
+        padding: 8px 16px;
+        border-radius: 4px;
+        color: white;
+        margin-top: 5px;
     }

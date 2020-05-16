@@ -22,7 +22,7 @@
 
         <div class="item">
           <div>Email</div>
-          <div class="input" ><input type="email" name="email" placeholder="Digite seu melhor E-mail" value="{{user.email}}"></div>
+          <div class="input" ><input onblur="Validate.apply(this,'isEmail')" type="email" name="email" placeholder="Digite seu melhor E-mail" value="{{user.email}}"></div>
         </div>
 
         <div class="item">

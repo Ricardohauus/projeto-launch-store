@@ -162,3 +162,46 @@ const LightBox = {
   }
 
 }
+
+const Validate = {
+  apply(input, func) {
+    this.clearErrors(input);
+    let results = Validate[func](input.value)
+    input.value = results.value
+    if (results.error) {
+      this.displayErrors(input, results.error)
+    }
+  },
+  displayErrors(input, error) {
+    const div = document.createElement('div')
+    div.classList.add('error')
+    div.innerHTML = error
+    input.parentNode.appendChild(div)
+    input.focus();
+  },
+  clearErrors(input) {
+    const errorDiv = input.parentNode.querySelector(".error")
+    if (errorDiv) {
+      errorDiv.remove();
+    }
+  },
+  isEmail(value) {
+    let error = null;
+    const mailFormat = /^\w+([\.-_]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!value.match(mailFormat)) {
+      error = "Email inválido"
+    }
+    return { error, value };
+  },
+  cep(value) {
+    value = value.replace(/\D/g, "");
+    if (value.length == 8) {
+      // CEP 12345-678
+      value = value.replace(/(\d{5})(\d{3})/, "$1-$2")
+    } else if (value.length > 8) {
+      value = value.substring(0, 8);
+      value = value.replace(/(\d{5})(\d{3})/, "$1-$2")
+    }
+    return value;
+  }
+}
