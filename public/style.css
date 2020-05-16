@@ -171,6 +171,7 @@
         margin-bottom: 8px;
     }
     
+    form .item .input input,
     form .item input[type="text"],
     form .item input[type="number"],
     form .item textarea,
@@ -507,4 +508,20 @@
     .search-products nav ul li a:hover {
         color: black;
         font-weight: bold;
+    }
+    /*USER REGISTER*/
+    
+    .user-register.container.form {
+        max-width: 600px;
+    }
+    
+    .form input[name="password"],
+    .form input[name="passwordRepeat"],
+    .form input[name="cep"],
+    .form input[name="cpf_cnpj"] {
+        max-width: 50%;
+    }
+    
+    .form input[name="email"] {
+        max-width: 70%;
     }

@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-  <section class="container form">
+  <section class="user-register container form">
     <form method="POST" {% if user.id != null %} action="/users/register?_method=PUT" {% else %} action="/users/register" {% endif %} >
 
       <div class="fields">
@@ -22,28 +22,28 @@
 
         <div class="item">
           <div>Email</div>
-          <div><input type="email" name="email" placeholder="Digite seu melhor E-mail" value="{{user.email}}"></div>
+          <div class="input" ><input type="email" name="email" placeholder="Digite seu melhor E-mail" value="{{user.email}}"></div>
         </div>
 
         <div class="item">
           <div>Senha</div>
-          <div><input type="password" name="password" placeholder="Digite uma senha forte" value="{{user.password}}"></div>
+          <div class="input" ><input type="password" name="password" placeholder="Digite uma senha forte" value="{{user.password}}"></div>
         </div>
         {% if not user.id %}
           <div class="item">
             <div>Repetir Senha</div>
-            <div><input type="password" name="passwordRepeat" placeholder="Digite a senha novamente"></div>
+            <div class="input" ><input type="password" name="passwordRepeat" placeholder="Digite a senha novamente"></div>
           </div>
         {% endif %}
 
         <div class="item">
-          <div>CPF / CPPJ</div>
-          <div><input type="text" name="cpf_cnpj" placeholder="Digite seu CPF ou CNPJ" value="{{user.cpf_cnpj}}"></div>
+          <div>CPF / CNPJ</div>
+          <div><input onkeydown="Mask.apply(this,'cpfCnpj')" type="text" name="cpf_cnpj" placeholder="Digite seu CPF ou CNPJ" value="{{user.cpf_cnpj}}"></div>
         </div>
 
         <div class="item">
           <div>CEP</div>
-          <div><input type="text" name="cep" placeholder="99999-999" value="{{user.cep}}"></div>
+          <div><input onkeydown="Mask.apply(this,'cep')" type="text" name="cep" placeholder="99999-999" value="{{user.cep}}"></div>
         </div>
 
         <div class="item">
