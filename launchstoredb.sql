@@ -1,3 +1,5 @@
+CREATE DATABASE "launchstoredb" 
+
 -- CREATE TABLES --
 CREATE TABLE IF NOT EXISTS "products" (
   "id" SERIAL PRIMARY KEY,
