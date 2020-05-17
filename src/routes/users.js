@@ -16,10 +16,10 @@ const SessionController = require("../app/controllers/SessionController")
 
 // Users - Register 
 routes.get("/register", UserController.registerForm)
-// routes.post("/register", UserController.post)
+routes.post("/register", UserController.saveOrUpdate)
 
-// routes.get("/", UserController.show)
-// routes.put("/", UserController.update)
-// routes.delete("/", UserController.delete)
+routes.get("/", UserController.show)
+routes.put("/", UserController.saveOrUpdate)
+routes.delete("/", UserController.delete)
 
 module.exports = routes;

@@ -1,103 +1,65 @@
+const User = require("../models/User")
+
 module.exports = {
   registerForm(req, res) {
     try {
       return res.render("users/register")
     } catch (error) {
-      console.log(erro);
+      console.log(error);
     }
   },
   async saveOrUpdate(req, res) {
+    req.body.cpf_cnpj = req.body.cpf_cnpj.replace(/\W/g, "");
+
     const keys = Object.keys(req.body)
-    const { id } = req.body
+    const { id, email, cpf_cnpj, password, passwordRepeat } = req.body
     let results;
-    let productId;
 
     for (key of keys) {
-      if (req.body[key] == "" && key != "removed_files") {
+      if (req.body[key] == "") {
         return res.send('Por favor, Preencha todos os campos!')
       }
     }
 
-    if (req.body.removed_files) {
-      const removedFiles = req.body.removed_files.split(",")
-      const lastIndex = removedFiles.length - 1
-      removedFiles.splice(lastIndex, 1)
-      const removedFilesPromisse = removedFiles.map(id => File.delete(id))
-      await Promise.all(removedFilesPromisse);
-    }
-
-    if (req.files.length == 0 && !id) {
-      return res.send('Por favor, Envie pelo menos uma imagem!')
-    }
-
-    req.body.price = req.body.price.replace(/\D/g, "")
 
     if (id) {
-      const oldProduct = await Product.find(id);
-      const { price } = oldProduct.rows[0];
-
-      if (price != req.body.price) {
-        req.body.old_price = price
-      }
-      results = await Product.update(req.body);
+      results = await User.update(req.body);
     } else {
-      results = await Product.create(req.body);
+      if (password != passwordRepeat) {
+        return res.send('As Senhas não conferem!')
+      }
+      results = await User.findBy(email, cpf_cnpj);
+      if (results.rows > 0) {
+        return res.send('Usuário já existe!')
+      }
+      results = await User.create(req.body);
     }
-    productId = results.rows[0].id;
-
-    const filesPromise = req.files.map(file => File.create({
-      ...file, product_id: productId
-    }))
-
-    await Promise.all(filesPromise)
-
-    return res.redirect(`products/${productId}`)
+    return res.redirect(`/`)
   },
   async edit(req, res) {
     const { id } = req.params
-    let results = await Product.find(id);
 
-    const product = results.rows[0];
+    let results = await User.find(id);
 
-    if (!product) return res.send("Produto não encontrado")
+    const user = results.rows[0];
 
-    product.price = product.price ? formatPrice(product.price) : product.price
+    if (!user) return res.send("Usuário não encontrado")
 
-    results = await Category.all();
-
-    const categories = results.rows
-
-    results = await Product.file(product.id);
-    let files = results.rows
-    files = files.map(file => ({
-      ...file,
-      src: `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`
-    }))
-
-    return res.render("products/create.njk", { product, categories, files })
+    return res.render("users/register.njk", { user })
 
   },
   async delete(req, res) {
     const { id } = req.body
-    await Product.delete(id);
+    await User.delete(id);
     return res.send("deletado")
   },
   async show(req, res) {
     const { id } = req.params
-    let result = await Product.find(id);
-    let product = result.rows[0]
+    let result = await User.find(id);
+    let user = result.rows[0]
 
-    if (!product) return res.send("Produto não encontrado")
+    if (!user) return res.send("Produto não encontrado")
 
-    product.price = product.price ? formatPrice(product.price) : product.price
-    product.old_price = product.old_price ? formatPrice(product.old_price) : product.old_price
-    product.updated_at = moment(product.updated_at).format('DD/MM/YYYY [ás] H').concat("h")
-    results = await Product.file(product.id);
-    const files = results.rows.map(file => ({
-      ...file,
-      src: `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`
-    }))
-
-    return res.render("products/show", { product, files })
+    return res.render("products/show", { user })
   }
 }

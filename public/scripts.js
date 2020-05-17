@@ -222,5 +222,22 @@ const Validate = {
     }
 
     return { error, value }
+  },
+  isPassword(value) {
+    let error = null
+
+    const password = document.querySelector("#password");
+    const passwordRepeat = document.querySelector("#passwordRepeat");
+
+    if (passwordRepeat) {
+      if (password.value != passwordRepeat.value) {
+        error = "As Senhas não conferem!"
+      } else {
+        this.clearErrors(password);
+        this.clearErrors(passwordRepeat);
+      }
+    }
+
+    return { error, value }
   }
 }

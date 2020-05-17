@@ -27,12 +27,12 @@
 
         <div class="item">
           <div>Senha</div>
-          <div class="input" ><input required type="password" name="password" placeholder="Digite uma senha forte" value="{{user.password}}"></div>
+          <div class="input" ><input onblur="Validate.apply(this,'isPassword')" id="password" required type="password" name="password" placeholder="Digite uma senha forte" value="{{user.password}}"></div>
         </div>
         {% if not user.id %}
           <div class="item">
             <div>Repetir Senha</div>
-            <div class="input" ><input required type="password" name="passwordRepeat" placeholder="Digite a senha novamente"></div>
+            <div class="input" ><input onblur="Validate.apply(this,'isPassword')" id="passwordRepeat" required type="password" name="passwordRepeat" required type="password" name="passwordRepeat" placeholder="Digite a senha novamente"></div>
           </div>
         {% endif %}
 
