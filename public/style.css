@@ -62,6 +62,11 @@
         background-color: #f73f39;
     }
     
+    .button.disabled {
+        background-color: #c2bfbf;
+        cursor: not-allowed;
+    }
+    
     .button.delete:hover {
         background-color: #b40d07;
     }

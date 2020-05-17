@@ -173,16 +173,21 @@ const Validate = {
     }
   },
   displayErrors(input, error) {
+    const button = document.querySelector(".button");
     const div = document.createElement('div')
     div.classList.add('error')
     div.innerHTML = error
     input.parentNode.appendChild(div)
-    input.focus();
+    button.setAttribute("disabled", true)
+    button.classList.add("disabled")
   },
   clearErrors(input) {
     const errorDiv = input.parentNode.querySelector(".error")
+    const button = document.querySelector(".button");
     if (errorDiv) {
       errorDiv.remove();
+      button.removeAttribute("disabled")
+      button.classList.remove("disabled")
     }
   },
   isEmail(value) {
@@ -193,15 +198,29 @@ const Validate = {
     }
     return { error, value };
   },
-  cep(value) {
-    value = value.replace(/\D/g, "");
-    if (value.length == 8) {
-      // CEP 12345-678
-      value = value.replace(/(\d{5})(\d{3})/, "$1-$2")
-    } else if (value.length > 8) {
-      value = value.substring(0, 8);
-      value = value.replace(/(\d{5})(\d{3})/, "$1-$2")
+  isCpfCnpj(value) {
+    let error = null
+
+    const cleanValues = value.replace(/\D/g, "")
+
+    if (cleanValues.length > 11 && cleanValues.length !== 14) {
+      error = "CNPJ inválido"
     }
-    return value;
+    else if (cleanValues.length < 12 && cleanValues.length !== 11) {
+      error = "CPF inválido"
+    }
+
+    return { error, value }
+  },
+  isCep(value) {
+    let error = null
+
+    const cleanValues = value.replace(/\D/g, "")
+
+    if (cleanValues.length !== 8) {
+      error = "CEP inválido"
+    }
+
+    return { error, value }
   }
 }
