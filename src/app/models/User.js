@@ -57,5 +57,8 @@ module.exports = {
   },
   delete(id) {
     return db.query(`DELETE FROM users WHERE ID = ${id}`)
-  }
+  },
+  findOne(id) {
+    return db.query(`SELECT * FROM users WHERE id = ${id} `)
+  },
 }

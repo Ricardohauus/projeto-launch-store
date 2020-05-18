@@ -1,5 +1,5 @@
 const User = require("../models/User")
-
+const { formatCep, formatCPfCnpj } = require("../lib/utils")
 module.exports = {
   registerForm(req, res) {
     try {
@@ -9,7 +9,6 @@ module.exports = {
     }
   },
   async saveOrUpdate(req, res) {
-
     try {
       var user = req.body
       let results;
@@ -38,27 +37,15 @@ module.exports = {
 
         user.cpf_cnpj = user.cpf_cnpj.replace(/\W/g, "");
         user.cep = user.cep.replace(/\W/g, "");
-        await User.create(user);
+        results = await (await User.create(user)).rows[0].id;
+        req.session.userId = results;
+        return res.redirect(`/users`)
       }
-      return res.redirect(`/`)
+
     } catch (error) {
       console.log(error);
       return res.render('users/register', { error, user })
     }
-  },
-  async edit(req, res) {
-    try {
-      const { id } = req.params
-      let results = await User.find(id);
-      var user = results.rows[0];
-      if (!user) return res.render('users/register', { error: "Usuário não encontrado!", user })
-
-      return res.render("users/register.njk", { user })
-    } catch (error) {
-      console.log(error);
-      return res.render('users/register', { error, user })
-    }
-
   },
   async delete(req, res) {
     const { id } = req.body
@@ -67,15 +54,19 @@ module.exports = {
   },
   async show(req, res) {
     try {
-      const { id } = req.params
-      let results = await User.find(id);
-      var user = results.rows[0];
-      if (!user) return res.render('users/register', { error: "Usuário não encontrado!", user })
+      const { userId: id } = req.session
 
-      return res.render("users/show.njk", { user })
+      let results = await User.findOne(id);
+
+      var user = results.rows[0];
+
+      if (!user) return res.render('users/register', { error: "Usuário não encontrado!", user })
+      user.cep = formatCep(user.cep);
+      user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
+      return res.render("users/register.njk", { user })
     } catch (error) {
       console.log(error);
-      return res.render('users/register', { error, user })
+      return res.render('users/register.njk', { error, user })
     }
 
   }

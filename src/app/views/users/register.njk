@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-  <section class="user-register container form">
+  <section class="{% if user.id == null %} user-register {% else %} user-dashboard {% endif %} container form">
     <form method="POST" {% if user.id != null %} action="/users/register?_method=PUT" {% else %} action="/users/register" {% endif %} >
 
       <div class="fields">
@@ -27,39 +27,67 @@
 
         <div class="item">
           <div>Senha</div>
-          <div class="input" ><input onblur="Validate.apply(this,'isPassword')" id="password" required type="password" name="password" placeholder="Digite uma senha forte" value="{{user.password}}"></div>
+          <div class="input">
+            <input onblur="Validate.apply(this,'isPassword')" 
+            id="password" r
+            equired type="password" 
+            name="password" 
+          {% if  user.id %}
+            placeholder="Digite sua senha para atualizar seu cadastro">
+          {% else %}              
+            placeholder="Digite uma senha forte">
+          {% endif %}
         </div>
-        {% if not user.id %}
-          <div class="item">
-            <div>Repetir Senha</div>
-            <div class="input" ><input onblur="Validate.apply(this,'isPassword')" id="passwordRepeat" required type="password" name="passwordRepeat" required type="password" name="passwordRepeat" placeholder="Digite a senha novamente" value="{{user.passwordRepeat}}" ></div>
-          </div>
-        {% endif %}
-
+      </div>
+      {% if not user.id %}
         <div class="item">
-          <div>CPF / CNPJ</div>
-          <div class="input" ><input required onkeydown="Mask.apply(this,'cpfCnpj')" onblur="Validate.apply(this,'isCpfCnpj')"  type="text" name="cpf_cnpj" placeholder="Digite seu CPF ou CNPJ" value="{{user.cpf_cnpj}}"></div>
+          <div>Repetir Senha</div>
+          <div class="input">
+            <input onblur="Validate.apply(this,'isPassword')" id="passwordRepeat" required type="password" name="passwordRepeat" required type="password" name="passwordRepeat" placeholder="Digite a senha novamente" ></div>
         </div>
+      {% endif %}
 
-        <div class="item">
-          <div>CEP</div>
-          <div class="input" ><input required onkeydown="Mask.apply(this,'cep')" onblur="Validate.apply(this,'isCep')" type="text" name="cep" placeholder="99999-999" value="{{user.cep}}"></div>
-        </div>
+      <div class="item">
+        <div>CPF / CNPJ</div>
+        <div class="input" ><input required onkeydown="Mask.apply(this,'cpfCnpj')" onblur="Validate.apply(this,'isCpfCnpj')"  type="text" name="cpf_cnpj" placeholder="Digite seu CPF ou CNPJ" value="{{user.cpf_cnpj}}"></div>
+      </div>
 
-        <div class="item">
-          <div>Endereço</div>
-          <div><input required type="text" name="adress" placeholder="Digite seu endereço completo" value="{{user.adress}}"></div>
-        </div>
+      <div class="item">
+        <div>CEP</div>
+        <div class="input" ><input required onkeydown="Mask.apply(this,'cep')" onblur="Validate.apply(this,'isCep')" type="text" name="cep" placeholder="99999-999" value="{{user.cep}}"></div>
+      </div>
 
-        {% if product.id == null %}
-          <button class="button" type="submit" id="mySubmit" >
+      <div class="item">
+        <div>Endereço</div>
+        <div><input required type="text" name="adress" placeholder="Digite seu endereço completo" value="{{user.adress}}"></div>
+      </div>
+
+      {% if user.id == null %}
+        <button class="button" type="submit" id="mySubmit" >
             Registrar
           </button>
-        {% else %}
-          <button class="button  edit" type="submit" id="mySubmit">
+      {% else %}
+        <button class="button  edit" type="submit" id="mySubmit">
             Editar
           </button>
-        {% endif %}
+      {% endif %}
+    </form>
+
+    {% if user.id != null %}
+      <form id="form-delete" action="/users?_method=DELETE" method="post">
+        <input type="hidden" name="id" value={{user.id}}>
+        <button class="button delete" type="submit">Deletar</button>
       </form>
-    </section>
-  {% endblock %}
+    {% endif %}
+  </section>
+
+  <script>
+    const formDelete = document.querySelector("#form-delete")
+    formDelete.addEventListener("submit", function (event) {
+      const confirmation = confirm("Tem certeza que deseja excluir sua conta? Essa operação não poderá ser desfeita!")
+      if (!confirmation) {
+        event.preventDefault()
+      }
+    })
+  </script>
+{% endblock %}
