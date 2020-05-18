@@ -231,7 +231,7 @@ const Validate = {
 
     if (passwordRepeat) {
       if (password.value != passwordRepeat.value) {
-        error = "As Senhas não conferem!"
+        error = "As senhas não conferem!"
       } else {
         this.clearErrors(password);
         this.clearErrors(passwordRepeat);

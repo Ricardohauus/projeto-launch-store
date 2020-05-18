@@ -9,43 +9,54 @@ module.exports = {
     }
   },
   async saveOrUpdate(req, res) {
-    req.body.cpf_cnpj = req.body.cpf_cnpj.replace(/\W/g, "");
 
-    const keys = Object.keys(req.body)
-    const { id, email, cpf_cnpj, password, passwordRepeat } = req.body
-    let results;
-
-    for (key of keys) {
-      if (req.body[key] == "") {
-        return res.send('Por favor, Preencha todos os campos!')
+    try {
+      var user = req.body
+      let results;
+      const keys = Object.keys(user)
+      for (key of keys) {
+        if (user[key] == "") {
+          return res.render('users/register', { error: 'Por favor, Preencha todos os campos!', user })
+        }
       }
+
+      if (user.id) {
+        user.cpf_cnpj = user.cpf_cnpj.replace(/\W/g, "");
+        results = await User.update(user);
+
+      } else {
+
+        if (user.password != user.passwordRepeat) {
+          return res.render('users/register', { error: 'As senhas não conferem!', user })
+        }
+
+        results = await User.findBy(user.email, user.cpf_cnpj);
+
+        if (results.rows.length > 0) {
+          return res.render('users/register', { error: 'Usuário já cadastrado!', user })
+        }
+
+        user.cpf_cnpj = user.cpf_cnpj.replace(/\W/g, "");
+        await User.create(user);
+      }
+      return res.redirect(`/`)
+    } catch (error) {
+      console.log(error);
+      return res.render('users/register', { error, user })
     }
-
-
-    if (id) {
-      results = await User.update(req.body);
-    } else {
-      if (password != passwordRepeat) {
-        return res.send('As Senhas não conferem!')
-      }
-      results = await User.findBy(email, cpf_cnpj);
-      if (results.rows > 0) {
-        return res.send('Usuário já existe!')
-      }
-      results = await User.create(req.body);
-    }
-    return res.redirect(`/`)
   },
   async edit(req, res) {
-    const { id } = req.params
+    try {
+      const { id } = req.params
+      let results = await User.find(id);
+      var user = results.rows[0];
+      if (!user) return res.render('users/register', { error: "Usuário não encontrado!", user })
 
-    let results = await User.find(id);
-
-    const user = results.rows[0];
-
-    if (!user) return res.send("Usuário não encontrado")
-
-    return res.render("users/register.njk", { user })
+      return res.render("users/register.njk", { user })
+    } catch (error) {
+      console.log(error);
+      return res.render('users/register', { error, user })
+    }
 
   },
   async delete(req, res) {
@@ -54,12 +65,17 @@ module.exports = {
     return res.send("deletado")
   },
   async show(req, res) {
-    const { id } = req.params
-    let result = await User.find(id);
-    let user = result.rows[0]
+    try {
+      const { id } = req.params
+      let results = await User.find(id);
+      var user = results.rows[0];
+      if (!user) return res.render('users/register', { error: "Usuário não encontrado!", user })
 
-    if (!user) return res.send("Produto não encontrado")
+      return res.render("users/register.njk", { user })
+    } catch (error) {
+      console.log(error);
+      return res.render('users/register', { error, user })
+    }
 
-    return res.render("products/show", { user })
   }
 }

@@ -32,7 +32,7 @@
         {% if not user.id %}
           <div class="item">
             <div>Repetir Senha</div>
-            <div class="input" ><input onblur="Validate.apply(this,'isPassword')" id="passwordRepeat" required type="password" name="passwordRepeat" required type="password" name="passwordRepeat" placeholder="Digite a senha novamente"></div>
+            <div class="input" ><input onblur="Validate.apply(this,'isPassword')" id="passwordRepeat" required type="password" name="passwordRepeat" required type="password" name="passwordRepeat" placeholder="Digite a senha novamente" value="{{user.passwordRepeat}}" ></div>
           </div>
         {% endif %}
 
