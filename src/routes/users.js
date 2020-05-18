@@ -6,7 +6,7 @@ const SessionController = require("../app/controllers/SessionController")
 // // Users - Login / Logout
 // routes.get("/login", SessionController.loginForm)
 // routes.post("/login", SessionController.login)
-// routes.post("/logout", SessionController.logout)
+routes.post("/logout", SessionController.logout)
 
 // // Users - Reset Password / Forgot
 // routes.get("/forgot-password", SessionController.forgotForm)
