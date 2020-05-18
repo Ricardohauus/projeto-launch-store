@@ -1,7 +1,7 @@
 const db = require("../../config/db")
 const { hash } = require("bcrypt")
 module.exports = {
-  create(data) {
+  async create(data) {
     const query = `
         INSERT INTO users (                        
             name,            
@@ -13,7 +13,7 @@ module.exports = {
         ) VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id
     `
-    const passwordHash = hash(data.password, 8)
+    const passwordHash = await hash(data.password, 8)
 
     const values = [
       data.name,
@@ -33,20 +33,17 @@ module.exports = {
     const query = `
         UPDATE users SET
             name = $1,
-            email = $2,
-            password = $3,
-            cpf_cnpj = $4,
-            cep = $5,
-            adress = $6
-        where id = $7
-        RETURNING id
+            email = $2,            
+            cpf_cnpj = $3,
+            cep = $4,
+            adress = $5
+        where id = $6
+        
     `
-    const passwordHash = hash(data.password, 8)
 
     const values = [
       data.name,
       data.email,
-      passwordHash,
       data.cpf_cnpj,
       data.cep,
       data.adress,
