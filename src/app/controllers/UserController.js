@@ -22,8 +22,8 @@ module.exports = {
 
       if (user.id) {
         user.cpf_cnpj = user.cpf_cnpj.replace(/\W/g, "");
+        user.cep = user.cep.replace(/\W/g, "");
         results = await User.update(user);
-
       } else {
 
         if (user.password != user.passwordRepeat) {
@@ -37,6 +37,7 @@ module.exports = {
         }
 
         user.cpf_cnpj = user.cpf_cnpj.replace(/\W/g, "");
+        user.cep = user.cep.replace(/\W/g, "");
         await User.create(user);
       }
       return res.redirect(`/`)
@@ -71,7 +72,7 @@ module.exports = {
       var user = results.rows[0];
       if (!user) return res.render('users/register', { error: "Usuário não encontrado!", user })
 
-      return res.render("users/register.njk", { user })
+      return res.render("users/show.njk", { user })
     } catch (error) {
       console.log(error);
       return res.render('users/register', { error, user })

@@ -1,5 +1,5 @@
 const db = require("../../config/db")
-
+const { hash } = require("bcrypt")
 module.exports = {
   create(data) {
     const query = `
@@ -13,10 +13,12 @@ module.exports = {
         ) VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id
     `
+    const passwordHash = hash(data.password, 8)
+
     const values = [
       data.name,
       data.email,
-      data.password,
+      passwordHash,
       data.cpf_cnpj,
       data.cep,
       data.adress
@@ -39,10 +41,12 @@ module.exports = {
         where id = $7
         RETURNING id
     `
+    const passwordHash = hash(data.password, 8)
+
     const values = [
       data.name,
       data.email,
-      data.password,
+      passwordHash,
       data.cpf_cnpj,
       data.cep,
       data.adress,
