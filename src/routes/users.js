@@ -3,12 +3,12 @@ const routes = express.Router()
 const UserController = require("../app/controllers/UserController")
 const SessionController = require("../app/controllers/SessionController")
 
-// // Users - Login / Logout
-// routes.get("/login", SessionController.loginForm)
-// routes.post("/login", SessionController.login)
+// Users - Login / Logout
+routes.get("/login", SessionController.loginForm)
+routes.post("/login", SessionController.login)
 routes.post("/logout", SessionController.logout)
 
-// // Users - Reset Password / Forgot
+// Users - Reset Password / Forgot
 // routes.get("/forgot-password", SessionController.forgotForm)
 // routes.get("/password-reset", SessionController.resetForm)
 // routes.post("/forgot-password", SessionController.forgot)

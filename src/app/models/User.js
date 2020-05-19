@@ -23,10 +23,9 @@ module.exports = {
       data.cep,
       data.adress
     ]
-
-    return db.query(query, values)
+    return await db.query(query, values)
   },
-  findBy(email, cpf_cnpj) {
+  async findBy(email, cpf_cnpj) {
     return db.query(`SELECT * FROM users WHERE (email = '${email}' or cpf_cnpj = '${cpf_cnpj}') `)
   },
   update(data) {
