@@ -33,7 +33,13 @@ module.exports = {
           return res.render('users/register', { error: 'Senha incorreta!', user })
         }
 
-        results = await User.update(user);
+        results = await User.update(user.id, {
+          name: user.name,
+          email: user.email,
+          cpf_cnpj: user.cpf_cnpj,
+          cep: user.cep,
+          address: user.address,
+        });
         user.cep = formatCep(user.cep);
         user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
 

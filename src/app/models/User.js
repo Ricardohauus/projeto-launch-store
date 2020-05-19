@@ -28,28 +28,21 @@ module.exports = {
   async findBy(email, cpf_cnpj) {
     return db.query(`SELECT * FROM users WHERE (email = '${email}' or cpf_cnpj = '${cpf_cnpj}') `)
   },
-  update(data) {
-    const query = `
-        UPDATE users SET
-            name = $1,
-            email = $2,            
-            cpf_cnpj = $3,
-            cep = $4,
-            adress = $5
-        where id = $6
-        
-    `
+  async update(id, fields) {
+    let query = "UPDATE users SET"
 
-    const values = [
-      data.name,
-      data.email,
-      data.cpf_cnpj,
-      data.cep,
-      data.adress,
-      data.id
-    ]
-
-    return db.query(query, values)
+    Object.keys(fields).map((key, index, array) => {
+      if ((index + 1) < array.length) {
+        query = `${query} ${key} = '${fields[key]}',`
+      } else {
+        // ultima interação
+        query = `${query}
+                ${key} = '${fields[key]}'
+                WHERE id = ${id}
+            `
+      }
+    })
+    return await db.query(query)
   },
   delete(id) {
     return db.query(`DELETE FROM users WHERE ID = ${id}`)
