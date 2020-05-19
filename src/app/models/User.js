@@ -1,5 +1,7 @@
 const db = require("../../config/db")
 const { hash } = require("bcrypt")
+const Product = require("../models/Product")
+const fs = require("fs")
 module.exports = {
   async create(data) {
     const query = `
@@ -44,8 +46,21 @@ module.exports = {
     })
     return await db.query(query)
   },
-  delete(id) {
-    return db.query(`DELETE FROM users WHERE ID = ${id}`)
+  async delete(id) {
+    let results = await db.query("SELECT * FROM products WHERE user_id =$1", [id]);
+    const products = results.rows
+
+    const allFilesPromise = products.map(product => Product.file(product.id))
+
+    let promiseResults = await Promise.all(allFilesPromise)
+
+    await db.query(`DELETE FROM users WHERE ID = ${id}`)
+
+    promiseResults.map(results => {
+      results.rows.map(file => fs.unlinkSync(file.path))
+    })
+
+    return
   },
   findOne(id) {
     return db.query(`SELECT * FROM users WHERE id = ${id} `)

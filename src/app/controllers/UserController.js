@@ -83,9 +83,15 @@ module.exports = {
     }
   },
   async delete(req, res) {
-    const { id } = req.body
-    await User.delete(id);
-    return res.send("deletado")
+    try {
+      await User.delete(19)
+      req.session.destroy();
+
+      return res.render('sessions/index', { success: 'Conta deletado com sucesso!' })
+    } catch (error) {
+      console.log(error);
+      return res.render('users/register', { error: 'Erro ao tentar excluir sua conta' })
+    }
   },
   async show(req, res) {
     try {
