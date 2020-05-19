@@ -34,5 +34,30 @@ module.exports = {
     req.session.userId = user.id;
 
     return res.redirect("/users");
-  }
+  },
+  async forgotForm(req, res) {
+    return res.render("sessions/forgot-password")
+  },
+  async forgot(req, res) {
+    const { email } = req.body
+    try {
+      const user = await (await User.findBy(email, '')).rows[0];
+
+      if (!user) {
+        return res.render('sessions/forgot-password', {
+          error: 'Email não cadastrado!',
+          user: req.body
+        })
+      }
+
+      return res.render('sessions/index', {
+        success: 'Enviado um email para a recuperação da senha!',
+        user: req.body
+      })
+    } catch (error) {
+      console.log(error);
+
+    }
+  },
+
 }

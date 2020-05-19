@@ -3,17 +3,17 @@ const routes = express.Router()
 const multer = require("../app/middlewares/multer")
 const ProductController = require("../app/controllers/ProductController")
 const SearchController = require("../app/controllers/SearchController")
-const { redirectToLogin } = require("../app/middlewares/session")
+const { onlyUsers } = require("../app/middlewares/session")
 //Search
 routes.get("/products/search", SearchController.index)
 
 //Products
-routes.get("/create", redirectToLogin, ProductController.create)
-routes.get("/:id/edit", ProductController.edit)
+routes.get("/create", onlyUsers, ProductController.create)
+routes.get("/:id/edit", onlyUsers, ProductController.edit)
 routes.get("/:id", ProductController.show)
 
-routes.post("/", multer.array("photos", 6), ProductController.saveOrUpdate)
-routes.put("/", multer.array("photos", 6), ProductController.saveOrUpdate)
-routes.delete("/", ProductController.delete)
+routes.post("/", onlyUsers, multer.array("photos", 6), ProductController.saveOrUpdate)
+routes.put("/", onlyUsers, multer.array("photos", 6), ProductController.saveOrUpdate)
+routes.delete("/", onlyUsers, ProductController.delete)
 
 module.exports = routes;
