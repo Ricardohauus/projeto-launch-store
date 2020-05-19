@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS "products" (
   "price" int NOT NULL,
   "quantity" int DEFAULT 0,
   "status" int DEFAULT 1,
+  "reset_token" text,
+  "reset_token_expires" text,
   "created_at" timestamp DEFAULT (now()),
   "updated_at" timestamp DEFAULT (now())
 );
