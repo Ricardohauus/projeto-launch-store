@@ -26,7 +26,7 @@ module.exports = {
     return await db.query(query, values)
   },
   async findBy(email, cpf_cnpj) {
-    return db.query(`SELECT * FROM users WHERE (email = '${email}' or cpf_cnpj = '${cpf_cnpj}') `)
+    return await db.query(`SELECT * FROM users WHERE (email = '${email}' or cpf_cnpj = '${cpf_cnpj}') `)
   },
   async update(id, fields) {
     let query = "UPDATE users SET"

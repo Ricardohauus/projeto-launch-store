@@ -2,6 +2,7 @@ const User = require("../models/User")
 const { compare } = require('bcrypt')
 const crypto = require("crypto")
 const mailer = require("../lib/mailer")
+const { hash } = require('bcrypt')
 module.exports = {
   logout(req, res) {
     req.session.destroy()
@@ -82,5 +83,64 @@ module.exports = {
 
     }
   },
+  resetForm(req, res) {
+    return res.render("sessions/password-reset", { token: req.query.token })
+  },
+  async reset(req, res) {
+    try {
+      const { password, token, email, passwordRepeat } = req.body
+
+      const newPassword = await hash(password, 8)
+      const user = await (await User.findBy(email, '')).rows[0];
+      let now = new Date()
+      now = now.setHours(now.getHours())
+
+      if (!user) {
+        return res.render("sessions/password-reset", {
+          user: req.body,
+          token,
+          error: "Usuário não cadastrado!"
+        })
+      }
+
+      if (password != passwordRepeat) return res.render('sessions/password-reset', {
+        user: req.body,
+        token,
+        error: 'A senha e a repetição da senha estão incorretas.'
+      })
+
+      if (now > user.reset_token_expires) return res.render('sessions/password-reset', {
+        user: req.body,
+        token,
+        error: 'Token expirado! Por favor, solicite uma nova recuperação de senha.'
+      })
+
+      if (token != user.reset_token) return res.render('sessions/password-reset', {
+        user: req.body,
+        token,
+        error: 'Token inválido! Solicite uma nova recuperação de senha.'
+      })
+
+      await User.update(user.id, {
+        password: newPassword,
+        reset_token: "",
+        reset_token_expires: "",
+      })
+
+      return res.render("sessions/index", {
+        user: req.body,
+        success: "Senha atualizada com sucesso!! Faça o seu login!"
+      })
+
+    } catch (err) {
+      console.error(err)
+      return res.render("sessions/password-reset", {
+        user: req.body,
+        token,
+        error: "Erro inesperado, tente novamente!"
+      })
+    }
+
+  }
 
 }
