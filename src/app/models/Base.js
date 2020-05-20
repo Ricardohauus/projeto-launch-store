@@ -1,16 +1,17 @@
 const db = require("../../config/db")
 function find(filters, table) {
-  let query = `SELECT * FROM ${table}`;
+  let query = `SELECT * FROM ${table} `;
+  if (filters) {
+    Object.keys(filters).map(key => {
+      query += `${key}`
 
-  Object.keys(filters).map(key => {
-    query += key
-
-    Object.keys(filters[key]).map(field => {
-      query += `${field} = '${filters[key][field]}'`
+      Object.keys(filters[key]).map(field => {
+        query += ` ${field} = '${filters[key][field]}' `
+      })
     })
-  })
-
-  const results = db.query(query);
+  }
+  //console.log(query);
+  return db.query(query);
 }
 const Base = {
   init({ table }) {
@@ -25,7 +26,6 @@ const Base = {
       return results.rows[0]
     } catch (error) {
       console.log(error);
-      return
     }
   },
   async findOne(filters) {
@@ -34,16 +34,15 @@ const Base = {
       return results.rows[0]
     } catch (error) {
       console.log(error);
-      return
     }
   },
   async findAll(filters) {
     try {
       const results = await find(filters, this.table)
+      //console.log(results.rows);
       return results.rows
     } catch (error) {
       console.log(error);
-      return
     }
   },
   async create(fields) {
@@ -51,16 +50,16 @@ const Base = {
       let keys = [], values = [];
       Object.keys(fields).map(key => {
         keys.push(key)
-        values.push(fields[key])
+        values.push(`'${fields[key]}'`)
       })
       const query = `INSERT INTO ${this.table} (${keys.join(',')})
       VALUES (${values.join(',')})
       RETURNING id`
+      console.log(query);
       const results = await db.query(query)
-      return results.rows[0]
+      return results.rows[0].id
     } catch (error) {
       console.log(error);
-      return
     }
   },
   update(id, fields) {
@@ -78,7 +77,6 @@ const Base = {
       return db.query(query)
     } catch (error) {
       console.log(error);
-      return;
     }
 
 

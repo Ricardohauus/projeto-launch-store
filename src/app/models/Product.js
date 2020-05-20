@@ -1,13 +1,15 @@
 const Base = require("./Base")
+const db = require("../../config/db")
 
-Base.init({ table: 'categories' })
+Base.init({ table: 'products' })
 
 module.exports = {
   ...Base,
-  file(id) {
-    return db.query(`SELECT * FROM files WHERE product_id = ${id}`)
+  async file(id) {
+    const results = await db.query(`SELECT * FROM files WHERE product_id = ${id}`)
+    return results.rows
   },
-  search(params) {
+  async search(params) {
     const { filter, category } = params
     let query = "",
       filterQuery = `WHERE`;
@@ -27,35 +29,7 @@ module.exports = {
     ${filterQuery}    
     order by p.updated_at desc
     `
-    return db.query(query)
+    const results = await db.query(query);
+    return results.rows;
   }
 }
-  //create(data) {
-  //   const query = `
-  //       INSERT INTO products (
-  //           category_id,
-  //           user_id,
-  //           name,
-  //           description,
-  //           old_price,
-  //           price,
-  //           quantity,
-  //           status
-  //       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-  //       RETURNING id
-  //   `
-  //   data.price = data.price.replace(/\D/g, "")
-
-  //   const values = [
-  //     data.category_id,
-  //     data.user_id || 1,
-  //     data.name,
-  //     data.description,
-  //     data.old_price || data.price,
-  //     data.price,
-  //     data.quantity,
-  //     data.status || 1
-  //   ]
-
-  //   return db.query(query, values)
-  // },

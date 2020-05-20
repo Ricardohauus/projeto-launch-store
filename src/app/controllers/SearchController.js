@@ -20,28 +20,29 @@ module.exports = {
       }
 
       async function getImage(productId) {
-        let results = await Product.file(productId);
-        const files = results.rows.map(file => src = `${req.protocol}://${req.headers.host}${file.path.replace(/[\/\\]/g, '/').replace("public", '')}`)
+        let files = await Product.file(productId);
+        files = files.map(file => src = `${req.protocol}://${req.headers.host}${file.path.replace(/[\/\\]/g, '/').replace("public", '')}`)
         return files[0];
       }
 
-      results = await Product.search(params)
+      let products = await Product.search(params)
 
-      if (!results) { return res.send("Não há nenhum registro") }
+      if (!products) { return res.send("Não há nenhum registro") }
 
-      const productPromise = results.rows.map(async product => {
+      const productPromise = products.map(async product => {
         product.img = await getImage(product.id)
         product.price = formatPrice(product.price)
         product.old_price = formatPrice(product.old_price)
         return product;
       })
 
-      let products = await Promise.all(productPromise)
+      products = await Promise.all(productPromise)
 
       const search = {
         term: req.query.filter,
         total: products.length
       }
+
       const categories = products.map(product => ({
         id: product.category_id,
         name: product.category_name

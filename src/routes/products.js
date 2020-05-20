@@ -5,7 +5,7 @@ const ProductController = require("../app/controllers/ProductController")
 const SearchController = require("../app/controllers/SearchController")
 const { onlyUsers } = require("../app/middlewares/session")
 //Search
-routes.get("/products/search", SearchController.index)
+routes.get("/search", SearchController.index)
 
 //Products
 routes.get("/create", onlyUsers, ProductController.create)

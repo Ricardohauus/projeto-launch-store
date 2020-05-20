@@ -3,6 +3,7 @@ const { compare } = require('bcrypt')
 const crypto = require("crypto")
 const mailer = require("../lib/mailer")
 const { hash } = require('bcrypt')
+
 module.exports = {
   logout(req, res) {
     req.session.destroy()
@@ -12,38 +13,41 @@ module.exports = {
     return res.render("sessions/index")
   },
   async login(req, res) {
-    const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
 
-    const user = await (await User.findBy(email, '')).rows[0];
+      const user = await User.find({ where: { email } })
 
-    if (!user) {
-      return res.render('sessions/index', {
-        error: 'Usuário não cadastrado!',
-        user: req.body
-      })
+      if (!user) {
+        return res.render('sessions/index', {
+          error: 'Usuário não cadastrado!',
+          user: req.body
+        })
+      }
+
+      const passed = await compare(password, user.password)
+
+      if (!passed) {
+        return res.render('sessions/index', {
+          error: 'Usuário ou Senha incorretos!',
+          user: req.body
+        })
+      }
+
+      req.session.userId = user.id;
+
+      return res.redirect("/users");
+    } catch (error) {
+      console.log(error)
     }
-
-    const passed = await compare(password, user.password)
-
-    if (!passed) {
-      return res.render('sessions/index', {
-        error: 'Usuário ou Senha incorretos!',
-        user: req.body
-      })
-    }
-
-
-    req.session.userId = user.id;
-
-    return res.redirect("/users");
   },
   async forgotForm(req, res) {
     return res.render("sessions/forgot-password")
   },
   async forgot(req, res) {
-    const { email } = req.body
     try {
-      const user = await (await User.findBy(email, '')).rows[0];
+      const { email } = req.body
+      let user = await User.findOne({ where: { email } })
 
       if (!user) {
         return res.render('sessions/forgot-password', {
@@ -80,7 +84,6 @@ module.exports = {
       })
     } catch (error) {
       console.log(error);
-
     }
   },
   resetForm(req, res) {
@@ -91,7 +94,7 @@ module.exports = {
       const { password, token, email, passwordRepeat } = req.body
 
       const newPassword = await hash(password, 8)
-      const user = await (await User.findBy(email, '')).rows[0];
+      const user = await User.findOne({ where: { email } })
       let now = new Date()
       now = now.setHours(now.getHours())
 

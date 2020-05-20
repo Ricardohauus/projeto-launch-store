@@ -1,6 +1,7 @@
 const User = require("../models/User")
 const { formatCep, formatCPfCnpj } = require("../lib/utils")
-const { compare } = require('bcrypt')
+const { compare, hash } = require('bcryptjs')
+
 module.exports = {
   registerForm(req, res) {
     try {
@@ -12,7 +13,7 @@ module.exports = {
   async saveOrUpdate(req, res) {
     try {
       var user = req.body
-      let results;
+
       const keys = Object.keys(user)
       for (key of keys) {
         if (user[key] == "") {
@@ -20,25 +21,25 @@ module.exports = {
         }
       }
 
-
       if (user.id) {
         user.cpf_cnpj = user.cpf_cnpj.replace(/\W/g, "");
         user.cep = user.cep.replace(/\W/g, "");
+        const userFind = await User.find(user.id)
 
-        results = await User.findOne(user.id);
-
-        const passed = await compare(user.password, results.rows[0].password)
+        const passed = await compare(user.password, userFind.password)
 
         if (!passed) {
+          user.cep = formatCep(user.cep);
+          user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
           return res.render('users/register', { error: 'Senha incorreta!', user })
         }
 
-        results = await User.update(user.id, {
+        await User.update(user.id, {
           name: user.name,
           email: user.email,
           cpf_cnpj: user.cpf_cnpj,
           cep: user.cep,
-          address: user.address,
+          adress: user.adress,
         });
         user.cep = formatCep(user.cep);
         user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
@@ -50,15 +51,19 @@ module.exports = {
       } else {
 
         if (user.password != user.passwordRepeat) {
+          user.cep = formatCep(user.cep);
+          user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
           return res.render('users/register', {
             error: 'As senhas não conferem!',
             user
           })
         }
+        const { email, cpf_cnpj } = user
+        const userFind = await User.findOne({ where: { email, cpf_cnpj } });
 
-        results = await User.findBy(user.email, user.cpf_cnpj);
-
-        if (results.rows.length > 0) {
+        if (userFind) {
+          user.cep = formatCep(user.cep);
+          user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
           return res.render('users/register', {
             error: 'Usuário já cadastrado!',
             user
@@ -67,11 +72,19 @@ module.exports = {
 
         user.cpf_cnpj = user.cpf_cnpj.replace(/\W/g, "");
         user.cep = user.cep.replace(/\W/g, "");
-        results = await (await User.create(user)).rows[0].id;
-        req.session.userId = results;
-        user.id = results
+        user.password = await hash(user.password, 8)
+        const userId = await User.create({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          cpf_cnpj: user.cpf_cnpj,
+          cep: user.cep,
+          adress: user.adress
+        })
+        user.id = userId
         user.cep = formatCep(user.cep);
         user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
+        req.session.userId = userId
 
         return res.render(`users/register`,
           { success: "Usuário criado com sucesso!", user })
@@ -84,7 +97,7 @@ module.exports = {
   },
   async delete(req, res) {
     try {
-      await User.delete(19)
+      await User.delete(req.session.userId)
       req.session.destroy();
 
       return res.render('sessions/index', { success: 'Conta deletado com sucesso!' })
@@ -97,11 +110,10 @@ module.exports = {
     try {
       const { userId: id } = req.session
 
-      let results = await User.findOne(id);
-
-      var user = results.rows[0];
+      const user = await User.findOne({ where: { id } })
 
       if (!user) return res.render('users/register', { error: "Usuário não encontrado!", user })
+
       user.cep = formatCep(user.cep);
       user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
 
