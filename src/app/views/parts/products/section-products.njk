@@ -10,12 +10,12 @@
         <div class="product">
           <div class="image" style="background-image: url({{product.img if product.img else '//placehold.it/500x500' }})"></div>
 
-          {% if product.price != product.old_price %}
+          {% if product.formattedPrice != product.formattedOldPrice %}
             <div class="old_price">
-              {{product.old_price}}
+              {{product.formattedOldPrice}}
             </div>
           {% endif %}
-          <p>{{product.price}}</p>
+          <p>{{product.formattedPrice}}</p>
           <h4>{{product.name}}</h4>
           <a href="/products/{{product.id}}" class="button">Ver Produto</a>
 

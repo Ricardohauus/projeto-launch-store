@@ -5,20 +5,20 @@
 
     <div class="gallery">
       <div class="highlight">
-        {% if not files[0] %}
+        {% if not product.files[0] %}
           <img src="http://placehold.it/500x500?text=PRODUTO SEM FOTO">
         {% else %}
-          <img onclick="LightBox.open()" src="{{files[0].src}}" alt="{{files[0].name}}">
+          <img onclick="LightBox.open()" src="{{product.files[0].src}}" alt="{{product.files[0].name}}">
         {% endif %}
         <div class="lightbox-target">
-          <img src="{{files[0].src}}" alt="{{files[0].name}}">
+          <img src="{{product.files[0].src}}" alt="{{product.files[0].name}}">
           <a href="#" class="lightbox-close" onclick="LightBox.close()">
             <i class="material-icons">close</i>
           </a>
         </div>
       </div>
       <div class="gallery-preview">
-        {% for image in files %}
+        {% for image in product.files %}
           <img onclick="ImageGallery.setImage(event)" src="{{image.src}}" alt="{{image.name}}" {% if loop.index0 == 0 %} class="active" {% endif %}>
         {% endfor %}
       </div>
@@ -34,12 +34,13 @@
       <div class="description">
         {{product.description}}
       </div>
+
       <div class="price-buy">
         <div class="price">
-          {{product.price}}
-          {% if product.price != product.old_price %}
+          {{product.formattedPrice}}
+          {% if product.formattedPrice != product.formattedOldPrice %}
             <span class="old">
-              {{product.old_price}}</span>
+              {{product.formattedOldPrice}}</span>
           {% endif %}
         </div>
 

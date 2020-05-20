@@ -10,7 +10,7 @@ function find(filters, table) {
       })
     })
   }
-  //console.log(query);
+  console.log(query);
   return db.query(query);
 }
 const Base = {
@@ -39,7 +39,6 @@ const Base = {
   async findAll(filters) {
     try {
       const results = await find(filters, this.table)
-      //console.log(results.rows);
       return results.rows
     } catch (error) {
       console.log(error);
@@ -73,7 +72,7 @@ const Base = {
 
       let query = `UPDATE ${this.table} SET
       ${update.join(',')} where id = ${id}`
-
+      console.log(query);
       return db.query(query)
     } catch (error) {
       console.log(error);
@@ -82,7 +81,9 @@ const Base = {
 
   },
   delete(id) {
-    return db.query(`DELETE FROM ${this.table} WHERE ID = ${id}`)
+    let query = `DELETE FROM ${this.table} WHERE ID = ${id}`;
+    console.log(query);
+    return db.query(query)
   }
 }
 

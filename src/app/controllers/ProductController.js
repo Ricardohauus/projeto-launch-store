@@ -2,8 +2,7 @@ const Category = require("../models/Category")
 const Product = require("../models/Product")
 const File = require("../models/File")
 const { unlinkSync } = require('fs')
-const { formatPrice } = require("../lib/utils")
-const moment = require("moment")
+const LoadProductService = require("../services/LoadProductService")
 
 module.exports = {
   async create(req, res) {
@@ -37,7 +36,7 @@ module.exports = {
         if (old_price != price) {
           const oldProduct = await Product.find(id);
           const { price: oldProductPrice } = oldProduct;
-          old_price = oldProductPrice;
+          old_price = oldProductPrice.toString();
         }
 
         if (req.body.removed_files) {
@@ -49,6 +48,8 @@ module.exports = {
         }
 
         price = price.replace(/\D/g, "")
+        old_price = old_price.replace(/\D/g, "")
+
         await Product.update(id, {
           category_id,
           name,
@@ -90,22 +91,13 @@ module.exports = {
   async edit(req, res) {
     try {
       const { id } = req.params
-      const product = await Product.find(id);
+      const product = await LoadProductService.load('product', { where: { id } })
 
       if (!product) return res.send("Produto não encontrado")
 
-      product.price = product.price ? formatPrice(product.price) : product.price
-
       const categories = await Category.findAll();
 
-      let files = await Product.file(product.id);
-
-      files = files.map(file => ({
-        ...file,
-        src: `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`
-      }))
-
-      return res.render("products/create.njk", { product, categories, files })
+      return res.render("products/create.njk", { product, categories })
     } catch (error) {
       console.log(error);
     }
@@ -127,23 +119,10 @@ module.exports = {
   async show(req, res) {
     try {
       const { id } = req.params
-
-      let product = await Product.find(id);
-
+      let product = await LoadProductService.load('product', { where: { id } })
       if (!product) return res.send("Produto não encontrado")
 
-      product.price = product.price ? formatPrice(product.price) : product.price
-      product.old_price = product.old_price ? formatPrice(product.old_price) : product.old_price
-      product.updated_at = moment(product.updated_at).format('DD/MM/YYYY [ás] H').concat("h")
-
-      let files = await Product.file(product.id);
-
-      files = files.map(file => ({
-        ...file,
-        src: `${req.protocol}://${req.headers.host}${file.path.replace('public', '')}`
-      }))
-
-      return res.render("products/show", { product, files })
+      return res.render("products/show", { product })
     } catch (error) {
       console.log(error);
     }
