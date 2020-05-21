@@ -6,14 +6,14 @@ async function login(req, res, next) {
 
   const user = await User.findOne({ where: { email } })
 
-  if (!user) return res.render("session/login", {
+  if (!user) return res.render("sessions/index", {
     user: req.body,
     error: "Usuário não cadastrado!"
   })
 
   const passed = await compare(password, user.password)
 
-  if (!passed) return res.render("session/login", {
+  if (!passed) return res.render("sessions/index", {
     user: req.body,
     error: "Senha incorreta!"
   })
@@ -29,7 +29,7 @@ async function forgot(req, res, next) {
   try {
     let user = await User.findOne({ where: { email } })
 
-    if (!user) return res.render("session/forgot-password", {
+    if (!user) return res.render("sessions/forgot-password", {
       user: req.body,
       error: "Email não cadastrado!"
     })
@@ -47,21 +47,21 @@ async function reset(req, res, next) {
 
   const user = await User.findOne({ where: { email } })
 
-  if (!user) return res.render("session/password-reset", {
+  if (!user) return res.render("sessions/password-reset", {
     user: req.body,
     token,
     error: "Usuário não cadastrado!"
   })
 
   // VERIFICA SE AS SENHAS ESTÃO IGUAIS 
-  if (password != passwordRepeat) return res.render('session/password-reset', {
+  if (password != passwordRepeat) return res.render('sessions/password-reset', {
     user: req.body,
     token,
     error: 'As senhas não conferem!'
   })
 
   // VERIFICA SE O TOKEN É VALIDO
-  if (token != user.reset_token) return res.render('session/password-reset', {
+  if (token != user.reset_token) return res.render('sessions/password-reset', {
     user: req.body,
     token,
     error: 'Token inválido! Solicite uma nova recuperação de senha.'
@@ -71,7 +71,7 @@ async function reset(req, res, next) {
   let now = new Date()
   now = now.setHours(now.getHours())
 
-  if (now > user.reset_token_expires) return res.render('session/password-reset', {
+  if (now > user.reset_token_expires) return res.render('sessions/password-reset', {
     user: req.body,
     token,
     error: 'Token expirado! Por favor, solicite uma nova recuperação de senha.'
