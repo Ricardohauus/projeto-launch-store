@@ -115,14 +115,16 @@ const PhotosUpload = {
 
     photoDiv.remove();
   },
-  removeOldPhoto(event) {
-    const photoDiv = event.target.parentNode;
+  removeOldPhoto(event, id, src) {
 
-    if (photoDiv.id) {
+    if (id) {
       const removedFiles = document.querySelector("input[name='removed_files']")
-
       if (removedFiles) {
-        removedFiles.value += `${photoDiv.id},`
+        const objectFile = { id, src }
+        console.log(objectFile);
+
+        removedFiles.value += `{ "id": ${id}, "src": "${src}" };`
+        console.log(removedFiles);
       }
     }
     this.removePhoto(event);
@@ -239,5 +241,25 @@ const Validate = {
     }
 
     return { error, value }
+  },
+  allFields(e) {
+    const items = document.querySelectorAll('.item input, .item select, .item textarea')
+
+    for (const item of items) {
+      if (item.value == "") {
+        console.log(item);
+
+        const message = document.createElement('div')
+        message.classList.add('messages')
+        message.classList.add('error')
+        message.innerHTML = 'Todos os campos são obrigatórios!'
+        document.querySelector('body').append(message)
+        e.preventDefault()
+        break;
+      }
+
+    }
+
+
   }
 }
