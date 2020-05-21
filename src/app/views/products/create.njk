@@ -47,7 +47,7 @@
                 {% for image in product.files %}
                   <div class="photo" id="{{image.id}}" >
                     <img src="{{image.src}}" alt="{{image.name}}" >
-                    <i class="material-icons" onclick="PhotosUpload.removeOldPhoto(event)" >close </i>
+                    <i class="material-icons" onclick="PhotosUpload.removeOldPhoto(event, {{image.id}}, '{{image.name}}')" >close </i>
                   </div>
                 {% endfor %}
                 <input type="hidden" name="removed_files" >
@@ -92,11 +92,11 @@
         {% endif %}
       </div>
       {% if product.id == null %}
-        <button  class="button" type="submit">
+        <button  class="button" type="submit" onclick="Validate.allFields(event)" >
            Salvar
           </button>
       {% else %}
-        <button  class="button edit" type="submit">
+        <button  class="button edit" type="submit"  >
            Editar
           </button>
       {% endif %}

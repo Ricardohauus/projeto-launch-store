@@ -30,6 +30,7 @@ async function show(req, res, next) {
 }
 async function saveOrUpdate(req, res, next) {
   const fillAllFields = checkAllFields(req.body)
+
   if (fillAllFields) {
     return res.render("users/register", fillAllFields)
   }
@@ -38,8 +39,11 @@ async function saveOrUpdate(req, res, next) {
 
   cpf_cnpj = cpf_cnpj.replace(/\D/g, "")
 
-  const user = await User.findOne({ where: { email }, or: { cpf_cnpj } });
+
+
   if (!id) {
+    const user = await User.findOne({ where: { email }, or: { cpf_cnpj } });
+
     if (user) return res.render('users/register', {
       user: req.body,
       error: 'Usuário já cadastrado.'

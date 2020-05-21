@@ -20,7 +20,7 @@ async function createUsers() {
       password,
       cpf_cnpj: faker.random.number(99999999),
       cep: faker.random.number(9999999999),
-      adress: faker.address.streetName(),
+      address: faker.address.streetName(),
     })
   }
 

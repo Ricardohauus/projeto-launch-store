@@ -1,4 +1,5 @@
-CREATE DATABASE "launchstoredb" 
+-- DROP DATABASE "launchstoredb" 
+-- CREATE DATABASE "launchstoredb";
 
 -- CREATE TABLES --
 CREATE TABLE IF NOT EXISTS "products" (
@@ -41,11 +42,6 @@ CREATE TABLE IF NOT EXISTS "users" (
   "updated_at" timestamp DEFAULT (now())
 );
 
--- FOREIGN KEY --
-ALTER TABLE "products" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
-ALTER TABLE "products" ADD FOREIGN key ("user_id") REFERENCES "users" ("id");
-ALTER TABLE "files" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
-
 -- TRIGGERS AND PROCEDURES -- 
 CREATE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $$
@@ -80,7 +76,7 @@ ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFE
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
---CASCADE EFFECT WHEN DELETE USER AND PRODUCTS
+-- CASCADE EFFECT WHEN DELETE USER AND PRODUCTS
 
 ALTER TABLE "products"
 ADD CONSTRAINT products_user_id_fkey
@@ -94,16 +90,17 @@ FOREIGN KEY ("product_id")
 REFERENCES "products" ("id")
 ON DELETE CASCADE;
 
--- to run seeds
+-- TO RUN SEEDS
 DELETE FROM products;
 DELETE FROM users;
 DELETE FROM files;
 
--- restart sequence auto_increment from tables ids
+-- RESTART SEQUENCE AUTO_INCREMENT FROM TABLES IDS
 ALTER SEQUENCE products_id_seq RESTART WITH 1;
 ALTER SEQUENCE users_id_seq RESTART WITH 1;
 ALTER SEQUENCE files_id_seq RESTART WITH 1;
 
+-- INSERT VALUES ON TABLE CATEGORIES
 INSERT INTO CATEGORIES (name) VALUES ('Acessórios para Veículos');
 INSERT INTO CATEGORIES (name) VALUES ('Aces. de Carros e Caminhonetes');
 INSERT INTO CATEGORIES (name) VALUES ('Aces. de Motos e Quadriciclos');
