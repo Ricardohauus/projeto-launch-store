@@ -14,25 +14,7 @@ module.exports = {
   },
   async login(req, res) {
     try {
-      const { email, password } = req.body;
-
-      const user = await User.findOne({ where: { email } })
-
-      if (!user) {
-        return res.render('sessions/index', {
-          error: 'Usuário não cadastrado!',
-          user: req.body
-        })
-      }
-
-      const passed = await compare(password, user.password)
-
-      if (!passed) {
-        return res.render('sessions/index', {
-          error: 'Usuário ou Senha incorretos!',
-          user: req.body
-        })
-      }
+      const { user } = req;
 
       req.session.userId = user.id;
 
@@ -46,15 +28,7 @@ module.exports = {
   },
   async forgot(req, res) {
     try {
-      const { email } = req.body
-      let user = await User.findOne({ where: { email } })
-
-      if (!user) {
-        return res.render('sessions/forgot-password', {
-          error: 'Email não cadastrado!',
-          user: req.body
-        })
-      }
+      const user = req.user
 
       const token = crypto.randomBytes(20).toString("hex")
       let now = new Date()
@@ -91,38 +65,11 @@ module.exports = {
   },
   async reset(req, res) {
     try {
-      const { password, token, email, passwordRepeat } = req.body
+      const user = req.user
+
+      const { password, token } = req.body
 
       const newPassword = await hash(password, 8)
-      const user = await User.findOne({ where: { email } })
-      let now = new Date()
-      now = now.setHours(now.getHours())
-
-      if (!user) {
-        return res.render("sessions/password-reset", {
-          user: req.body,
-          token,
-          error: "Usuário não cadastrado!"
-        })
-      }
-
-      if (password != passwordRepeat) return res.render('sessions/password-reset', {
-        user: req.body,
-        token,
-        error: 'A senha e a repetição da senha estão incorretas.'
-      })
-
-      if (now > user.reset_token_expires) return res.render('sessions/password-reset', {
-        user: req.body,
-        token,
-        error: 'Token expirado! Por favor, solicite uma nova recuperação de senha.'
-      })
-
-      if (token != user.reset_token) return res.render('sessions/password-reset', {
-        user: req.body,
-        token,
-        error: 'Token inválido! Solicite uma nova recuperação de senha.'
-      })
 
       await User.update(user.id, {
         password: newPassword,

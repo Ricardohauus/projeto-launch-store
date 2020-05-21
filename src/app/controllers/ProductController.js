@@ -15,21 +15,9 @@ module.exports = {
   },
   async saveOrUpdate(req, res) {
     try {
-      const keys = Object.keys(req.body)
       let { id, category_id, name, description,
         old_price, price, quantity, status } = req.body
       let { userId: user_id } = req.session;
-
-      for (key of keys) {
-        if (req.body[key] == "" && key != "removed_files") {
-          return res.send('Por favor, Preencha todos os campos!')
-        }
-      }
-
-      if (req.files.length == 0 && !id) {
-        return res.send('Por favor, Envie pelo menos uma imagem!')
-      }
-
 
       if (id) {
 

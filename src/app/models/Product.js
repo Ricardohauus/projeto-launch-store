@@ -23,8 +23,6 @@ module.exports = {
       or p.description ilike '%${filter}%' ) and status != 0 `
     }
     query += " order by p.updated_at desc "
-    console.log(query);
-
     const results = await db.query(query);
     return results.rows;
   }
