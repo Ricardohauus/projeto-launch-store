@@ -1,8 +1,8 @@
 const Category = require("../models/Category")
 const Product = require("../models/Product")
 const File = require("../models/File")
-const { unlinkSync } = require('fs')
 const LoadProductService = require("../services/LoadProductService")
+
 
 module.exports = {
   async create(req, res) {
@@ -14,13 +14,12 @@ module.exports = {
     }
   },
   async saveOrUpdate(req, res) {
+    let { id, category_id, name, description,
+      old_price, price, quantity, status } = req.body
+    let { userId: user_id } = req.session;
+
     try {
-      let { id, category_id, name, description,
-        old_price, price, quantity, status } = req.body
-      let { userId: user_id } = req.session;
-
       if (id) {
-
         if (old_price != price) {
           const oldProduct = await Product.find(id);
           const { price: oldProductPrice } = oldProduct;
@@ -28,10 +27,14 @@ module.exports = {
         }
 
         if (req.body.removed_files) {
-          const removedFiles = req.body.removed_files.split(",")
+          const removedFiles = req.body.removed_files.split(";")
           const lastIndex = removedFiles.length - 1
           removedFiles.splice(lastIndex, 1)
-          const removedFilesPromisse = removedFiles.map(id => File.delete(id))
+          const removedFilesPromisse = removedFiles.map(file => {
+            File.delete(JSON.parse(file).id)
+            LoadProductService.deleteFiles("public/images/" + JSON.parse(file).src)
+          })
+
           await Promise.all(removedFilesPromisse);
         }
 
@@ -73,6 +76,7 @@ module.exports = {
       return res.redirect(`products/${id}`)
     } catch (error) {
       console.log(error);
+      return res.redirect(`products/${id}`)
     }
 
   },
@@ -91,18 +95,19 @@ module.exports = {
     }
   },
   async delete(req, res) {
-    const files = await Product.file(req.body.id)
+    try {
+      const files = await Product.file(req.body.id)
 
-    await Product.delete(req.body.id)
+      await Product.delete(req.body.id)
 
-    files.map(file => {
-      try {
-        unlinkSync(file.path)
-      } catch (err) {
-        console.error(err)
-      }
-    })
-    return res.redirect('/products/create')
+      files.map(file => {
+        LoadProductService.deleteFiles(file.path)
+      })
+      return res.redirect('/products/create')
+    } catch (error) {
+      console.log(error);
+    }
+
   },
   async show(req, res) {
     try {

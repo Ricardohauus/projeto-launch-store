@@ -1,6 +1,7 @@
 const Product = require('../models/Product')
 const moment = require("moment")
 const { formatPrice } = require("../lib/utils")
+const { unlinkSync } = require('fs')
 
 async function getImage(productId) {
   let files = await Product.file(productId);
@@ -12,10 +13,14 @@ async function getImage(productId) {
   return files;
 }
 
+function deleteFiles(file) {
+  unlinkSync(file)
+}
+
 async function format(product) {
 
   const files = await getImage(product.id)
-  product.img = files[0].src
+  product.img = files[0] ? files[0].src : ''
   product.files = files
   product.formattedOldPrice = formatPrice(product.old_price)
   product.formattedPrice = formatPrice(product.price)
@@ -46,7 +51,8 @@ const LoadService = {
       console.log(error);
     }
   },
-  format
+  format,
+  deleteFiles
 }
 
 module.exports = LoadService

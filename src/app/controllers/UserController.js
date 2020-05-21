@@ -12,35 +12,37 @@ module.exports = {
   },
   async saveOrUpdate(req, res) {
     try {
-      const { user } = req
-      let { name, email, cpf_cnpj, cep, adress } = req.body
-
-      cpf_cnpj = cpf_cnpj.replace(/\D/g, "")
-      cep = cep.replace(/\D/g, "")
+      let user = req.body
+      user.cpf_cnpj = user.cpf_cnpj.replace(/\D/g, "")
+      user.cep = user.cep.replace(/\D/g, "")
 
       if (!user.id) {
+        user.password = await hash(user.password, 8)
         const userId = await User.create({
-          name,
-          email,
-          password,
-          cpf_cnpj,
-          cep,
-          adress
+          name: user.name,
+          email: user.email,
+          cpf_cnpj: user.cpf_cnpj,
+          cep: user.cep,
+          address: user.address,
+          password: user.password
         })
         req.session.userId = userId
         user.id = userId;
         return res.render(`users/register`, { success: "Usuário criado com sucesso!", user })
+
       } else {
+        user = req.user;
         await User.update(user.id, {
           name: user.name,
           email: user.email,
           cpf_cnpj: user.cpf_cnpj,
           cep: user.cep,
-          adress: user.adress,
+          address: user.address,
         });
         return res.render(`users/register`, {
           success: "Usuário atualizado com sucesso!", user
         })
+
       }
 
     } catch (error) {
