@@ -1,7 +1,7 @@
 const User = require("../models/User")
 const { formatCep, formatCPfCnpj } = require("../lib/utils")
 const { compare, hash } = require('bcryptjs')
-
+const LoadProductService = require("../services/LoadProductService")
 module.exports = {
   registerForm(req, res) {
     try {
@@ -72,5 +72,11 @@ module.exports = {
       return res.render('users/register.njk', { error, user })
     }
 
+  },
+  async ads(req, res) {
+    const products = await LoadProductService.load('products', {
+      where: { user_id: req.session.userId }
+    })
+    return res.render('users/ads', { products })
   }
 }

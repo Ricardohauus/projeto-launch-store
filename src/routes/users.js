@@ -25,4 +25,6 @@ routes.put("/register", onlyUsers, UserValidator.saveOrUpdate, UserController.sa
 routes.get("/", onlyUsers, UserValidator.show, UserController.show)
 routes.delete("/", onlyUsers, UserController.delete)
 
+routes.get("/ads", UserController.ads)
+
 module.exports = routes;
