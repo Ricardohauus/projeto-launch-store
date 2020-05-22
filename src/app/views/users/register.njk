@@ -1,86 +1,76 @@
 {% extends "layout.njk" %}
-
+{% import "parts/card.njk" as card %}
 {% block content %}
-  <section class="{% if user.id == null %} user-register {% else %} user-dashboard {% endif %} container form">
-    <form method="POST" {% if user.id != null %} action="/users/register?_method=PUT" {% else %} action="/users/register" {% endif %} >
 
-      <div class="fields">
-        {% if user.id == null %}
-          <div class="header">
-            <h3>Registre-se</h3>
-          </div>
-        {% else %}
-          <div class="header">
-            <h3>Editar Usuário</h3>
-            <div><input type="hidden" name="id" value="{{user.id}}"></div>
-          </div>
-        {% endif %}
+  {% call card.render(header, classes) %}
 
-        <div class="item">
-          <div>Nome Completo</div>
-          <div><input required type="text" name="name" placeholder="Digite seu nome completo" value="{{user.name}}"></div>
-        </div>
+  <form method="POST" {% if user.id != null %} action="/users/register?_method=PUT" {% else %} action="/users/register" {% endif %} >
 
-        <div class="item">
-          <div>Email</div>
-          <div class="input" ><input required onblur="Validate.apply(this,'isEmail')" type="email" name="email" placeholder="Digite seu melhor E-mail" value="{{user.email}}"></div>
-        </div>
+    <div class="fields">
+      <div class="item">
+        <div>Nome Completo</div>
+        <div><input required type="text" name="name" placeholder="Digite seu nome completo" value="{{user.name}}"></div>
+      </div>
 
-        <div class="item">
-          <div>Senha</div>
-          <div class="input">
-            <input onblur="Validate.apply(this,'isPassword')" 
+      <div class="item">
+        <div>Email</div>
+        <div class="input" ><input required onblur="Validate.apply(this,'isEmail')" type="email" name="email" placeholder="Digite seu melhor E-mail" value="{{user.email}}"></div>
+      </div>
+
+      <div class="item">
+        <div>Senha</div>
+        <div class="input">
+          <input onblur="Validate.apply(this,'isPassword')" 
             id="password" r
             equired type="password" 
             name="password" 
           {% if  user.id %}
             placeholder="Digite sua senha para atualizar seu cadastro">
-          {% else %}              
+        {% else %}              
             placeholder="Digite uma senha forte">
           {% endif %}
-        </div>
       </div>
-      {% if not user.id %}
-        <div class="item">
-          <div>Repetir Senha</div>
-          <div class="input">
-            <input onblur="Validate.apply(this,'isPassword')" id="passwordRepeat" required type="password" name="passwordRepeat" required type="password" name="passwordRepeat" placeholder="Digite a senha novamente" ></div>
-        </div>
-      {% endif %}
-
+    </div>
+    {% if not user.id %}
       <div class="item">
-        <div>CPF / CNPJ</div>
-        <div class="input" ><input required onkeydown="Mask.apply(this,'cpfCnpj')" onblur="Validate.apply(this,'isCpfCnpj')"  type="text" name="cpf_cnpj" placeholder="Digite seu CPF ou CNPJ" value="{{user.cpf_cnpj}}"></div>
+        <div>Repetir Senha</div>
+        <div class="input">
+          <input onblur="Validate.apply(this,'isPassword')" id="passwordRepeat" required type="password" name="passwordRepeat" required type="password" name="passwordRepeat" placeholder="Digite a senha novamente" ></div>
       </div>
+    {% endif %}
 
-      <div class="item">
-        <div>CEP</div>
-        <div class="input" ><input required onkeydown="Mask.apply(this,'cep')" onblur="Validate.apply(this,'isCep')" type="text" name="cep" placeholder="99999-999" value="{{user.cep}}"></div>
-      </div>
+    <div class="item">
+      <div>CPF / CNPJ</div>
+      <div class="input" ><input required onkeydown="Mask.apply(this,'cpfCnpj')" onblur="Validate.apply(this,'isCpfCnpj')"  type="text" name="cpf_cnpj" placeholder="Digite seu CPF ou CNPJ" value="{{user.cpf_cnpj}}"></div>
+    </div>
 
-      <div class="item">
-        <div>Endereço</div>
-        <div><input required type="text" name="address" placeholder="Digite seu endereço completo" value="{{user.address}}"></div>
-      </div>
+    <div class="item">
+      <div>CEP</div>
+      <div class="input" ><input required onkeydown="Mask.apply(this,'cep')" onblur="Validate.apply(this,'isCep')" type="text" name="cep" placeholder="99999-999" value="{{user.cep}}"></div>
+    </div>
 
-      {% if user.id == null %}
-        <button class="button" type="submit" id="mySubmit" >
+    <div class="item">
+      <div>Endereço</div>
+      <div><input required type="text" name="address" placeholder="Digite seu endereço completo" value="{{user.address}}"></div>
+    </div>
+
+    {% if user.id == null %}
+      <button class="button" type="submit" id="mySubmit" >
             Registrar
           </button>
-      {% else %}
-        <button class="button  edit" type="submit" id="mySubmit">
+    {% else %}
+      <button class="button  edit" type="submit" id="mySubmit">
             Editar
           </button>
-      {% endif %}
-    </form>
-
-    {% if user.id != null %}
-      <form id="form-delete" action="/users?_method=DELETE" method="post">
-        <input type="hidden" name="id" value={{user.id}}>
-        <button class="button delete" type="submit">Deletar</button>
-      </form>
     {% endif %}
-  </section>
+  </form>
+
+  {% if user.id != null %}
+    <form id="form-delete" action="/users?_method=DELETE" method="post">
+      <input type="hidden" name="id" value={{user.id}}>
+      <button class="button delete" type="submit">Deletar</button>
+    </form>
+  {% endif %}
 
   <script>
     const formDelete = document.querySelector("#form-delete")
@@ -91,4 +81,6 @@
       }
     })
   </script>
+
+  {% endcall %}
 {% endblock %}

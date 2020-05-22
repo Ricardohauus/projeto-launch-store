@@ -8,7 +8,7 @@ module.exports = {
   async create(req, res) {
     try {
       const categories = await Category.findAll()
-      return res.render("products/create", { categories })
+      return res.render("products/create", { categories, header: 'Cadastrar Produto' })
     } catch (error) {
       console.log(error);
     }
@@ -17,6 +17,7 @@ module.exports = {
     let { id, category_id, name, description,
       old_price, price, quantity, status } = req.body
     let { userId: user_id } = req.session;
+    console.log(req.body);
 
     try {
       if (id) {
@@ -83,13 +84,14 @@ module.exports = {
   async edit(req, res) {
     try {
       const { id } = req.params
+
       const product = await LoadProductService.load('product', { where: { id } })
 
       if (!product) return res.send("Produto não encontrado")
 
       const categories = await Category.findAll();
 
-      return res.render("products/create.njk", { product, categories })
+      return res.render("products/create.njk", { product, categories, header: 'Editar Produto' })
     } catch (error) {
       console.log(error);
     }

@@ -27,4 +27,7 @@ routes.delete("/", onlyUsers, UserController.delete)
 
 routes.get("/ads", UserController.ads)
 
+
+
+
 module.exports = routes;

@@ -5,7 +5,8 @@ const LoadProductService = require("../services/LoadProductService")
 module.exports = {
   registerForm(req, res) {
     try {
-      return res.render("users/register")
+      return res.render("users/register",
+        { header: 'Registre-se', classes: 'user-register container' })
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +67,8 @@ module.exports = {
       const { user } = req
       user.cep = formatCep(user.cep);
       user.cpf_cnpj = formatCPfCnpj(user.cpf_cnpj);
-      return res.render("users/register.njk", { user })
+      return res.render("users/register.njk", { user, header: 'Registre-se', classes: 'user-register container' }
+      )
     } catch (error) {
       console.log(error);
       return res.render('users/register.njk', { error, user })
