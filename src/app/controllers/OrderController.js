@@ -44,10 +44,10 @@ module.exports = {
         `
       })
 
-      return res.render("orders/success")
+      return res.render("orders/error")
     } catch (error) {
       console.log(error);
-      return res.render("orders/erro")
+      return res.render("orders/error")
     }
 
   }
