@@ -44,7 +44,7 @@ module.exports = {
         `
       })
 
-      return res.render("orders/error")
+      return res.render("orders/success")
     } catch (error) {
       console.log(error);
       return res.render("orders/error")
