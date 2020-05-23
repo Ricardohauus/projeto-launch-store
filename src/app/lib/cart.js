@@ -1,5 +1,4 @@
 const { formatPrice } = require('./utils')
-
 const Cart = {
   init(oldCart) {
     if (oldCart) {
@@ -10,7 +9,7 @@ const Cart = {
       this.total = {
         quantity: 0,
         price: 0,
-        formattedPrice: formatPrice(0);
+        formattedPrice: formatPrice(0)
       }
     }
     return this;
