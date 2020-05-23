@@ -42,7 +42,26 @@ const Cart = {
     this.total.formattedPrice = formatPrice(this.total.price)
     return this;
   },
-  removeOne(productId) { },
+  removeOne(productId) {
+    let inCart = this.items.find(item => item.product.id == product.id)
+    if (!inCart) return this;
+    inCart.quantity--
+    inCart.price *= inCart.quantity
+
+    this.total.quantity--;
+    this.total.price -= inCart.product.price
+    this.total.formattedPrice = formatPrice(this.total.price)
+
+    if (inCart.quantity < 1) {
+      this.items = this.items.filter(item =>
+        item.product.id != inCart.product.id
+      )
+      return this
+    }
+
+    return this;
+
+  },
   deleteeAll(productId) { }
 }
 
