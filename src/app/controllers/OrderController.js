@@ -46,7 +46,6 @@ module.exports = {
           }
         })
 
-
         await mailer.sendMail({
           to: seller.email,
           from: 'no-reply@launchsotre.com.br',
@@ -69,8 +68,11 @@ module.exports = {
         return order;
       })
 
-
       await Promise.all(createOrdersPromisse)
+
+      delete req.session.cart;
+      Cart.init()
+
       return res.render("orders/success")
     } catch (error) {
       console.log(error);
