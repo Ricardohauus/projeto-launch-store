@@ -42,6 +42,19 @@ CREATE TABLE IF NOT EXISTS "users" (
   "updated_at" timestamp DEFAULT (now())
 );
 
+CREATE TABLE IF NOT EXISTS "orders" (
+  "id" SERIAL PRIMARY KEY,
+  "seller_id" int NOT NULL,
+  "buyer_id" int NOT NULL,
+  "product_id" int NOT NULL,
+  "price" int NOT NULL,
+  "quantity" int DEFAULT 0,
+  "total" int NOT NULL,
+  "status" text NOT NULL,
+  "created_at" timestamp DEFAULT (now()),
+  "updated_at" timestamp DEFAULT (now())
+  );
+
 -- TRIGGERS AND PROCEDURES -- 
 CREATE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $$
@@ -60,6 +73,12 @@ EXECUTE PROCEDURE trigger_set_timestamp();
 -- UPDATE ROW UPDATED_AT OF TABLE PRODUCTS
 CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON products
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+-- UPDATE ROW UPDATED_AT OF TABLE ORDERS
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON orders
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
@@ -90,6 +109,19 @@ FOREIGN KEY ("product_id")
 REFERENCES "products" ("id")
 ON DELETE CASCADE;
 
+-- FOREIGN KEY FOR ORDERS
+ALTER TABLE "orders"
+ADD FOREIGN KEY ("seller_id")
+REFERENCES "users" ("id");
+
+ALTER TABLE "orders"
+ADD FOREIGN KEY ("buyer_id")
+REFERENCES "users" ("id");
+
+ALTER TABLE "orders"
+ADD FOREIGN KEY ("product_id")
+REFERENCES "products" ("id");
+
 -- TO RUN SEEDS
 DELETE FROM products;
 DELETE FROM users;
@@ -104,3 +136,7 @@ ALTER SEQUENCE files_id_seq RESTART WITH 1;
 INSERT INTO CATEGORIES (name) VALUES ('Acessórios para Veículos');
 INSERT INTO CATEGORIES (name) VALUES ('Aces. de Carros e Caminhonetes');
 INSERT INTO CATEGORIES (name) VALUES ('Aces. de Motos e Quadriciclos');
+
+
+
+  
