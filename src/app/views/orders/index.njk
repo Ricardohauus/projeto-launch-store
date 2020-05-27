@@ -1,0 +1,8 @@
+{% extends "layout.njk" %}
+{% import "parts/card.njk" as cards %}
+
+{% block content %}
+  {% call cards.render('Meus Pedidos','my-ordens container') %}
+
+  {% endcall %}
+{% endblock %}
