@@ -130,3 +130,32 @@
         width: 240px;
         margin: 16px auto;
     }
+    /* MENU */
+    
+    header div.container {
+        grid-template-columns: 220px auto 315px;
+    }
+    
+    li.cart a {
+        position: relative;
+    }
+    
+    li.cart a span {
+        background-color: rgb(28, 209, 28);
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 16px;
+        font-weight: bold;
+        color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 15px;
+        right: -2px;
+    }
+    
+    li.cart a:hover span {
+        background-color: white;
+    }

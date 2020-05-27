@@ -25,7 +25,6 @@
             Minha Conta
           </a>
           {% if session.userId %}
-
             <ul class="submenu">
               <li class="accounts">
                 <a href="/users">                
@@ -36,15 +35,28 @@
                 <a href="/users/ads">                
                 Meus Anúncios
              </a>
+              </li>
               <li>
                 <form action="/users/logout" method="POST">
                   <button>Sair</button>
                 </form>
               </li>
             </ul>
-          </li>
-        </ul>
-      {% endif %}
+          {% endif %}
+        </li>
+        <li class="cart" >
+          <a href="/cart">
+            <i class="material-icons">shopping_cart</i>
+            {% if (session.cart) and (session.cart.total.quantity > 0) %}
+              <span id="cart-status-info" >
+                {{session.cart.total.quantity}}
+              </span>
+
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+
     </nav>
 
   </div>
