@@ -12,8 +12,9 @@
   <div class="items">
     {% for item in cart.items %}
       <div class="item">
+
         <a href="/products/{{item.product.id}}">
-          <img src="{{item.product.src}}" alt="Imagem do Produto {{item.product.name}}">
+          <img src="{{item.product.img}}" alt="Imagem do Produto {{item.product.name}}">
           <span class="title">{{item.product.name}}</span>
         </a>
         <span class="price">
