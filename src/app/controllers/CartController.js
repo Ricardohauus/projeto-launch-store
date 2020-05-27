@@ -41,5 +41,19 @@ module.exports = {
       console.log(error);
     }
 
+  },
+  async deleteProduct(req, res) {
+    try {
+      let { cart } = req.session;
+      if (!cart) return redirect('/cart')
+
+      const { id } = req.params;
+      req.session.cart = Cart.init(cart).deleteProduct(id)
+
+      return res.redirect("/cart")
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 }

@@ -59,7 +59,7 @@ const Cart = {
     return this;
 
   },
-  deleteeAll(productId) {
+  deleteProduct(productId) {
     let inCart = this.getCartItem(productId);
 
     if (!inCart) return this;
@@ -71,13 +71,14 @@ const Cart = {
     }
 
     this.setRemoveProduct(inCart.product.id);
+    return this
 
   },
   getCartItem(productId) {
     return this.items.find(item => item.product.id == productId)
   },
   setRemoveProduct(productId) {
-    this.items = this.items.filter(item =>
+    return this.items = this.items.filter(item =>
       item.product.id != productId
     )
   }
