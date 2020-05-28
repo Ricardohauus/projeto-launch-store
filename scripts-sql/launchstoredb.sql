@@ -145,10 +145,10 @@ UPDATE products
 SET deleted_at = now()
 where products.id = old.id;
 
-CREATE VIEW product_without_deleted AS
+CREATE VIEW products_without_deleted AS
 SELECT * FROM products WHERE deleted_at IS NULL;
 
 ALTER TABLE products RENAME TO product_with_deleted;
-ALTER TABLE product_without_deleted RENAME TO products;
+ALTER TABLE products_without_deleted RENAME TO products;
 
   
