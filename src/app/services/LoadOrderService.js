@@ -5,7 +5,7 @@ const LoadProductService = require("./LoadProductService")
 const User = require("../models/User")
 
 async function format(order) {
-  order.product = await LoadProductService.load('product', {
+  order.product = await LoadProductService.load('productWithDelete', {
     where: { id: order.product_id }
   })
 
