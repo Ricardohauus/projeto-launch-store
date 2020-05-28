@@ -19,22 +19,32 @@
             Novo Anúncio
           </a>
         </li>
-        <li class="accounts">
+        <li class="dropdown-container">
           <a href="/accounts">
             <i class="material-icons">account_circle</i>
             Minha Conta
           </a>
           {% if session.userId %}
-            <ul class="submenu">
-              <li class="accounts">
-                <a href="/users">                
-                Minha Conta
-             </a>
+            <ul class="dropdown">
+              <li class="dropdown-container">
+                <a href="/users">
+                  Minha Conta
+                </a>
               </li>
               <li>
-                <a href="/users/ads">                
-                Meus Anúncios
-             </a>
+                <a href="/users/ads">
+                  Meus Anúncios
+                </a>
+              </li>
+              <li>
+                <a href="/orders">
+                  Meus Pedidos
+                </a>
+              </li>
+              <li>
+                <a href="/orders/sales">
+                  Minhas Vendas
+                </a>
               </li>
               <li>
                 <form action="/users/logout" method="POST">
@@ -44,11 +54,11 @@
             </ul>
           {% endif %}
         </li>
-        <li class="cart" >
+        <li class="cart">
           <a href="/cart">
             <i class="material-icons">shopping_cart</i>
             {% if (session.cart) and (session.cart.total.quantity > 0) %}
-              <span id="cart-status-info" >
+              <span id="cart-status-info">
                 {{session.cart.total.quantity}}
               </span>
 
