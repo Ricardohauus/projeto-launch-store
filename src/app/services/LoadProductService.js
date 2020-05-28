@@ -18,8 +18,6 @@ function deleteFiles(file) {
 }
 
 async function format(product) {
-  console.log(product);
-
   const files = await getImage(product.id)
   product.img = files[0] ? files[0].src : ''
   product.files = files
