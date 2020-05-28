@@ -1,4 +1,5 @@
 const db = require("../../config/db")
+
 function find(filters, table) {
   let query = `SELECT * FROM ${table} `;
   if (filters) {
